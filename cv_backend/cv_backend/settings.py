@@ -94,12 +94,8 @@ WSGI_APPLICATION = 'cv_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'curriculum',
-        'USER': 'postgres',
-        'PASSWORD': 'thos',
-        'HOST': 'localhost',  # O una URL de servidor remoto
-        'PORT': '5432',  # El puerto por defecto de PostgreSQL
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
