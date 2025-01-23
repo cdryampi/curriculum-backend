@@ -2,6 +2,40 @@ from django.db import models
 from core.models import SingletonModel
 from django_ckeditor_5.fields import CKEditor5Field
 from multimedia_manager.models import MediaFile, DocumentFile
+from django.contrib.auth.models import AbstractUser
+from django.utils.translation import gettext_lazy as _
+from django.conf import settings
+
+
+
+class CustomUser(AbstractUser):
+    ROLES = [
+        ('admin', 'Admin'),
+        ('guest', 'Guest'),
+        ('test', 'Test'),
+    ]
+    
+    role = models.CharField(
+        max_length=10,
+        choices=ROLES,
+        default='guest'
+    )
+    profile_image = models.ForeignKey(
+        MediaFile,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='foto_perfil_invitado',
+        verbose_name=_("Foto de perfil"),
+        help_text=_("Ingrese la foto de perfil para los comentarios.")
+    )
+
+    class Meta(AbstractUser.Meta):
+        swappable = 'AUTH_USER_MODEL'
+
+    def __str__(self):
+        return self.username
+
 
 class UserProfile(SingletonModel):
     """
@@ -100,7 +134,7 @@ class UserProfile(SingletonModel):
         blank=True,
         verbose_name="Archivo de Currículum"
     )
-    
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile', default=1)
     @property
     def profesion_readable(self):
         return self.PROFESIONES.get(self.profesion, 'Profesión no especificada')
@@ -116,7 +150,7 @@ class UserProfile(SingletonModel):
         return obj
 
     def __str__(self):
-        return f"Perfil de Usuario para {self.correo_electronico}"
+        return f"Perfil de Usuario para {self.user}"
 
     class Meta:
         verbose_name = "Perfil de Usuario"

@@ -95,7 +95,7 @@ WSGI_APPLICATION = 'cv_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'curriculum',
+        'NAME': 'cv_lloro',
         'USER': 'postgres',
         'PASSWORD': 'thos',
         'HOST': 'localhost',  # O una URL de servidor remoto
@@ -203,3 +203,6 @@ CORS_ALLOWED_ORIGINS = [
 
 RECAPTCHA_PUBLIC_KEY = '6Lccat8pAAAAAHJl3xAEyfRXr75Gn3qoyb85yz3h'
 RECAPTCHA_PRIVATE_KEY = '6Lccat8pAAAAAB5D2Xlgt0STyZHYVM2_WP5oYLj1'
+
+# settings.py
+AUTH_USER_MODEL = 'base_user.CustomUser'

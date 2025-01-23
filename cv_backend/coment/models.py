@@ -1,7 +1,14 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
+
 from django.utils.translation import gettext_lazy as _
 from django_ckeditor_5.fields import CKEditor5Field
+
+from django.contrib.auth.models import Permission
+
+from django.contrib.auth import get_user_model
+
+
 
 class Comment(models.Model):
     """
@@ -35,7 +42,7 @@ class Comment(models.Model):
 
 class RegisteredUserComment(Comment):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="user_comments",
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user_comments",
         verbose_name=_("Usuario"), help_text=_("El usuario que publicó el comentario.")
     )
     parent_comment = models.ForeignKey(
@@ -46,6 +53,12 @@ class RegisteredUserComment(Comment):
     class Meta:
         verbose_name = _("Comentario de Usuario Registrado")
         verbose_name_plural = _("Comentarios de Usuarios Registrados")
+
+        permissions = [
+            ("can_create_guest_user_comment", "Can create registered user comment"),
+            ("can_edit_guest_user_comment", "Can edit registered user comment"),
+            ("can_delete_guest_user_comment", "Can delete registered user comment"),
+        ]
 
 class GuestUserComment(Comment):
     username = models.CharField(

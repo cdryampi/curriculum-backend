@@ -1,11 +1,12 @@
 from django.db.models import Q
 from multimedia_manager.models import MediaFile
 
-def filter_logo_queryset(model_name, model_id):
+def filter_logo_queryset(model_name, model_id, user=None):
     queryset = MediaFile.objects.all()
 
     model_fields = {
         'UserProfile': 'foto_perfil',
+        'CustomUser':'foto_perfil_invitado',
         'StaticPage': 'imagen_pagina_estatica',
         'Skill': 'logo_skill',
         'Service': 'service_icons',
