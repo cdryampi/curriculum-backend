@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,13 +21,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-mb40x@k=)x0p$$@v&hx6^f#k^2dt^kku^l1!)l*u3fm-bfs+51'
+
+
+
+SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-URL_SERVER = "http://127.0.0.1:8000"
-ALLOWED_HOSTS = []
+URL_SERVER = config('URL_SERVER', default='http://localhost:8000')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
 
 
 # Application definition
@@ -197,8 +201,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:3000',
 ]
 
-RECAPTCHA_PUBLIC_KEY = '6Lccat8pAAAAAHJl3xAEyfRXr75Gn3qoyb85yz3h'
-RECAPTCHA_PRIVATE_KEY = '6Lccat8pAAAAAB5D2Xlgt0STyZHYVM2_WP5oYLj1'
+RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY', default='6Lccat8pAAAAAFT2Xlgt0STyZHYVM2_WP5oYLj1')
+RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY', default='6Lccat8pAAAAAFT2Xlgt0STyZHYVM2_WP5oYLj1')
 
 # settings.py
 AUTH_USER_MODEL = 'base_user.CustomUser'
