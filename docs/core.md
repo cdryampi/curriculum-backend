@@ -6,9 +6,9 @@ Explicación de los modelos y su funcionamiento en el administrador de Django.
 
 ## Tabla de Contenidos
 
-1. [Core] (#descripcion-general)
-2. [BaseModel] (#modelo-de-basemodel)
-3. [Tags] (#modelo-tag)
+1. [descripción general](#descripción-general)
+2. [BaseModel](#modelo-de-basemodel)
+3. [Tags](#modelo-tag)
 
 ---
 
