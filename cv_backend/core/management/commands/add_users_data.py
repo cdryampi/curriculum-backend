@@ -22,9 +22,65 @@ class Command(BaseCommand):
 
         # Crear usuarios con roles
         admin_users = [
-            {'username': 'admin1', 'email': 'admin1@example.com', 'password': 'admin123', 'role': 'admin'},
-            {'username': 'admin2', 'email': 'admin2@example.com', 'password': 'admin123', 'role': 'admin'},
-            {'username': 'yampi', 'email': 'yampi@example.com', 'password': 'thos', 'role': 'admin'},
+            {
+                'username': 'admin1',
+                'email': 'admin1@example.com',
+                'password': 'admin123',
+                'role': 'admin',
+                'profile':
+                {
+                    'nombre': 'Juan',
+                    'apellido': 'Pérez',
+                    'correo_electronico': 'admin1@example.com',
+                    'resumen_habilidades': 'Liderazgo, Gestión de equipos, Estrategia.',
+                    'description': 'Administrador con amplia experiencia en proyectos tecnológicos.',
+                    'profesion': 'administrador_sistemas',
+                    'ciudad': 'Galicia',
+                    'direccion': 'Av. Principal 123',
+                    'telefono': '123456789',
+                    'edad': 45,
+                    'keywords': ['gestión', 'administración', 'estrategia', 'organización', 'liderazgo'],
+                }
+            },
+            {
+                'username': 'admin2',
+                'email': 'admin2@example.com',
+                'password': 'admin123',
+                'role': 'admin',
+                'profile':{
+                    'nombre': 'María',
+                    'apellido': 'López',
+                    'correo_electronico': 'guest1@example.com',
+                    'resumen_habilidades': 'Curiosidad, Exploración, Innovación.',
+                    'description': 'Usuario explorador interesado en descubrir nuevos productos.',
+                    'profesion': 'explorador',
+                    'ciudad': 'Cusco',
+                    'direccion': 'Calle Inca 456',
+                    'telefono': '987654321',
+                    'edad': 30,
+                    'keywords': ['explorador', 'curiosidad', 'descubrimiento', 'navegación', 'usuario'],
+                },
+            },
+            {
+                'username': 'yampi',
+                'email': 'yampi@example.com',
+                'password': 'thos',
+                'role': 'admin',
+                'profile':{
+                    'nombre': 'Yampi',
+                    'apellido': 'Yaku',
+                    'correo_electronico': 'yampi@example.com',
+                    'resumen_habilidades': 'Desarrollo de software, Programación web, Programación móvil.',
+                    'description': 'Desarrollador de software con experiencia en desarrollo web y móvil.',
+                    'profesion': 'programador_web',
+                    'ciudad': 'Lima',
+                    'direccion': 'Av. Principal 123',
+                    'telefono': '123456789',
+                    'edad': 0,
+                    'keywords': ['programación', 'desarrollo', 'software', 'web', 'móvil'],
+
+                },
+            },
         ]
         guest_users = [
             {'username': 'guest1', 'email': 'guest1@example.com', 'password': 'guest123', 'role': 'guest'},
@@ -36,12 +92,6 @@ class Command(BaseCommand):
             {'username': 'test3', 'email': 'test3@example.com', 'password': 'test123', 'role': 'test'},
         ]
         
-        # Diccionario de palabras clave basadas en roles
-        keywords_by_role = {
-            'admin': ['gestión', 'administración', 'estrategia', 'organización', 'liderazgo'],
-            'guest': ['explorador', 'curiosidad', 'descubrimiento', 'navegación', 'usuario'],
-            'test': ['pruebas', 'QA', 'debugging', 'validación', 'automatización']
-        }     
 
         # Crear usuarios administradores
         for user_data in admin_users:
@@ -52,12 +102,7 @@ class Command(BaseCommand):
             }
 
             if user_data['username'] == 'yampi':
-                defaults = {
-                    'email': user_data['email'],
-                    'role': user_data['role'],
-                    'is_staff': True,
-                    'is_superuser': True
-                }
+                defaults['is_superuser'] = True
 
             user, created = CustomUser.objects.get_or_create(
                 username=user_data['username'],
@@ -91,31 +136,37 @@ class Command(BaseCommand):
                 )
         
         # Crear perfiles de usuario y datos relacionados
-        for user in CustomUser.objects.all():
-            profile, created = UserProfile.objects.get_or_create(
-                user=user,
-                defaults={
-                    'nombre': f'Nombre de {user.username}',
-                    'apellido': f'Apellido de {user.username}',
-                    'correo_electronico': user.email,
-                    'profesion': 'programador_web' if user.role == 'admin' else 'programador_mobile',
-                }
-            )
-            if created:
-                self.stdout.write(self.style.SUCCESS(f"Created profile for user: {user.username}"))
+        self.stdout.write(self.style.WARNING("Assigning user profiles and related data..."))
+        for user_data in admin_users:
+            user = CustomUser.objects.get(username=user_data['username'])
+            profile = UserProfile.objects.get_or_create(user=user)[0]
 
-                # Añadir keywords de ejemplo
-                keywords = keywords_by_role[user.role]
-                for kw in keywords:
-                    Keywords.objects.create(user_profile=profile, keyword=kw)
-                    self.stdout.write(self.style.SUCCESS(f"Added keyword: {kw} to user: {user.username}"))
-
-                # Crear meta datos de ejemplo
-                Meta.objects.get_or_create(
-                    user_profile=profile,
-                    defaults={
-                        'meta_title': f'Meta de {user.username}',
-                        'meta_description': f'Descripción de {user.username}',
-                    }
+            if profile:
+                profile.nombre = user_data['profile']['nombre']
+                profile.apellido = user_data['profile']['apellido']
+                profile.correo_electronico = user_data['profile']['correo_electronico']
+                profile.resumen_habilidades = user_data['profile']['resumen_habilidades']
+                profile.description = user_data['profile']['description']
+                profile.profesion = user_data['profile']['profesion']
+                profile.ciudad = user_data['profile']['ciudad']
+                profile.direccion = user_data['profile']['direccion']
+                profile.telefono = user_data['profile']['telefono']
+                profile.edad = user_data['profile']['edad']
+                profile.save()
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"Updated profile for user: {user.username}"
+                    )
                 )
+
+                for keyword in user_data['profile']['keywords']:
+                    # Crear keywords pero las primary keys no son únicas y estan en el modelo Keywords
+                    keyword_obj, created = Keywords.objects.get_or_create(keyword=keyword, user_profile=profile)
+                    self.stdout.write(
+                        self.style.SUCCESS(
+                            f"Added keyword: {keyword} to user: {user.username}"
+                        )
+                    )
+        
+
         self.stdout.write(self.style.SUCCESS("Sample users, profiles, and related data added successfully!"))
