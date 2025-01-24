@@ -5,6 +5,8 @@ from django.contrib.auth.models import Group
 from core.admin.base_img_mixin import filter_logo_queryset
 from django.utils.translation import gettext_lazy as _
 from multimedia_manager.models import MediaFile, DocumentFile
+from django.utils.html import format_html
+from core.admin.base_img_mixin import filter_logo_queryset
 
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
@@ -101,11 +103,28 @@ class UserProfileAdmin(admin.ModelAdmin):
     """
     Admin personalizado para el modelo UserProfile.
     """
+    list_display = ('user', 'nombre', 'apellido', 'profesion', 'ciudad', 'telefono', 'edad')
+    search_fields = ('nombre', 'apellido', 'correo_electronico')
+    list_filter = ('profesion', 'ciudad')
+    ordering = ('user',)
+
+
+    def user_link(self, obj):
+        """
+        Genera un enlace al perfil del usuario en el admin.
+        """
+        if obj.user:
+            return format_html('<a href="{}">{}</a>', obj.user.get_absolute_url(), obj.user.username)
+        return "Sin usuario"
 
     def save_model(self, request, obj, form, change):
         """
-        Asegura que solo pueda existir una instancia de UserProfile.
+        Asegura que solo pueda existir una instancia de UserProfile y asigna el dueño de las imágenes a los usuarios.
         """
+        if not obj.pk:  # Al crear la imagen
+            obj.creado_por = request.user
+        obj.modificado_por = request.user  # Al modificar la imagen
+        
         if not obj.pk and UserProfile.objects.exists():
             self.message_user(
                 request,
@@ -116,14 +135,20 @@ class UserProfileAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        """
-        Personaliza la queryset para el campo ForeignKey 'foto_perfil'.
-        """
-        if db_field.name == 'foto_perfil':
-            user = request.user  # Obtener el usuario actual
-            kwargs['queryset'] = MediaFile.objects.filter(user=user)  # Filtrar imágenes según el usuario
+        if db_field.name == 'foto':
+            print(f"Middleware ejecutado para: {request.user}")
+
+            if request.user.is_authenticated:
+                # Obtén el ID del perfil del usuario actual
+                user_profile_id = getattr(request.user.profile, 'id', None)
+                kwargs['queryset'] = filter_logo_queryset('UserProfile', model_id=user_profile_id, user=request.user)
+            else:
+                kwargs['queryset'] = MediaFile.objects.none()
+
             kwargs['empty_label'] = 'Sin imagen asociada'
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
 
     def get_queryset(self, request):
         """
@@ -157,8 +182,11 @@ class UserProfileAdmin(admin.ModelAdmin):
         if obj and obj.user != request.user and not request.user.is_superuser:
             return ('nombre', 'apellido', 'profesion', 'ciudad', 'direccion', 'telefono', 'edad', 'resume_file')
         return super().get_readonly_fields(request, obj)
+    
+    user_link.short_description = "Usuario"
+    user_link.admin_order_field = 'user'
 
-
+    
 admin.site.register(UserProfile, UserProfileAdmin)
 
 class KeywordsAdmin(admin.ModelAdmin):
