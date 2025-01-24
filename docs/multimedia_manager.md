@@ -9,7 +9,7 @@ Explicación de la aplicación `Multimedia Manager` del proyecto CV Backend.
 1. [Introducción](#introducción)
 2. [descripción general](#descripción-general)
 3. [Documentación del Modelo `MediaFile`](#documentación-del-modelo-mediafile)
-4. [Imágen del administrador]
+4. [Imágen del administrador](#imágen-del-administrador)
 
 ---
 
@@ -117,5 +117,8 @@ El modelo `DocumentFile` representa un archivo que puede ser utilizado como curr
 ## Imágen del administrador
 
 En el administrador de Django, los modelos `MediaFile` y `DocumentFile` se presentan de la siguiente manera:
-![MediaFile](./images/multimedia_manager/admin_multimedia_1.png)
-![DocumentFile](./images/multimedia_manager/admin_multimedia_2.png)
+
+1. **MediaFile**
+   ![MediaFile](./images/multimedia_manager/admin_multimedia_1.png)
+2. **DocumentFile**
+   ![DocumentFile](./images/multimedia_manager/admin_multimedia_2.png)
