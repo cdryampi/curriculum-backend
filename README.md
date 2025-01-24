@@ -57,11 +57,18 @@ Sigue estos pasos para configurar y ejecutar el proyecto en tu entorno local:
    python manage.py migrate
    ```
 6. **Ejecutar los comandos de creación de datos de prueba**:
+
    ```bash
    python manage.py add_users_data
    python manage.py assign_group_permissions
+
    ```
-7. **Iniciar el servidor de desarrollo**:
+
+7. **Compilar archivos estáticos**:
+   ```bash
+   python manage.py collectstatic
+   ```
+8. **Iniciar el servidor de desarrollo**:
    ```bash
    python manage.py runserver
    ```
