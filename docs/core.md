@@ -1,20 +1,29 @@
-# CV Backend - Proyecto Django - Docs
+# CV Backend - Proyecto Django - Docs - Core
 
-Explicación de los modelos y su funcionamiento en el administrador de Django.
+Explicación de los modelos de la aplicación `Core` del proyecto CV Backend.
 
 ---
 
 ## Tabla de Contenidos
 
-1. [descripción general](#descripción-general)
-2. [BaseModel](#modelo-de-basemodel)
-3. [Tags](#modelo-tag)
+1. [Introducción](#introducción)
+2. [descripción general](#descripción-general)
+3. [BaseModel](#modelo-de-basemodel)
+4. [Tags](#modelo-tag)
+
+---
+
+## Introducción
+
+La idea de la aplicación `Core` es tener un lugar centralizado para gestionar modelos comunes que son utilizados por otras aplicaciones del proyecto. En este caso, se definen dos modelos abstractos que pueden ser heredados por otros modelos para añadir funcionalidades comunes. Aunque se ha añadido por respetar las viejas prácticas de desarrollo de Django.
 
 ---
 
 ## Descripción General
 
 El modelo `Core` es la aplicación principal del proyecto se encarga de gestionar modelos comunes como los `Sigelton` y los `Metadatos` de las otras apps.
+
+---
 
 # Modelo de `BaseModel`
 

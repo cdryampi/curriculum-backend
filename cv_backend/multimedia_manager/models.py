@@ -75,9 +75,6 @@ class MediaFile(BaseModel):
     def __str__(self):
         return f"Media File {self.file.name}"
 
-    def __str__(self):
-        return f"Media File {self.file.name}"
-
 class DocumentFile(models.Model):
     """
         Clase que representa a un fichero para el CV.
