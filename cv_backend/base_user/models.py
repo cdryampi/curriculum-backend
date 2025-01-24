@@ -37,7 +37,7 @@ class CustomUser(AbstractUser):
         return self.username
 
 
-class UserProfile(SingletonModel):
+class UserProfile(models.Model):
     """
         Modelo que representa a un usuario y su información personal.
     """
@@ -134,16 +134,15 @@ class UserProfile(SingletonModel):
         blank=True,
         verbose_name="Archivo de Currículum"
     )
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile', default=1)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='profile',
+    )
     @property
     def profesion_readable(self):
         return self.PROFESIONES.get(self.profesion, 'Profesión no especificada')
     
-    def save(self, *args, **kwargs):
-        if not self.pk and UserProfile.objects.exists():
-            raise Exception('No se puede crear más de una instancia de UserProfile')
-        return super(UserProfile, self).save(*args, **kwargs)
-
     @classmethod
     def load(cls):
         obj, created = cls.objects.get_or_create(pk=1)
