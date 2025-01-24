@@ -1,3 +1,4 @@
 /front_curriculum
 ./postcss.config.js
 .env
+./cv_backend/media
