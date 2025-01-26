@@ -1,12 +1,17 @@
 from django.db.models import Q
 from multimedia_manager.models import MediaFile
 
-def filter_logo_queryset(model_name, model_id, user=None):
+def filter_logo_queryset(model_name, model_id=None, user=None):
+    """
+    Filtra el queryset de MediaFile basado en el modelo relacionado, el ID del modelo,
+    y el usuario autenticado.
+    """
     queryset = MediaFile.objects.all()
 
+    # Define los campos relacionados para cada modelo
     model_fields = {
-        'UserProfile': 'foto_perfil',
-        'CustomUser':'foto_perfil_invitado',
+        'UserProfile': 'foto_perfil',  # Relación inversa hacia UserProfile
+        'CustomUser': 'foto_perfil_invitado',
         'StaticPage': 'imagen_pagina_estatica',
         'Skill': 'logo_skill',
         'Service': 'service_icons',
@@ -15,32 +20,28 @@ def filter_logo_queryset(model_name, model_id, user=None):
         'ExperienciaLaboral': ['logo_empresa', 'logo_empresa_fondo'],
     }
 
-    # Obtener campos específicos para el modelo
-    fields = model_fields.get(model_name, [])
+    # Obtén el campo relacionado para el modelo especificado
+    fields = model_fields.get(model_name)
+    if not fields:
+        print(f"Modelo {model_name} no definido en model_fields.")
+        return MediaFile.objects.none()
 
-    # Añadir condiciones de filtrado basadas en los campos específicos
+    # Aplica el filtro basado en el modelo y sus campos relacionados
     if isinstance(fields, list):
-        # Combinamos todas las condiciones con AND para cada campo relacionado
-        q_objects = Q()
+        query = Q()
         for field in fields:
-            q_objects &= (Q(**{f'{field}__id': model_id}) | Q(**{f'{field}__isnull': True}))
-        queryset = queryset.filter(q_objects)
+            query |= Q(**{f'{field}__id': model_id})
     else:
-        # Aplicar filtro para un solo campo
-        queryset = queryset.filter(
-            Q(**{f'{fields}__id': model_id}) | Q(**{f'{fields}__isnull': True})
-        )
+        query = Q(**{f'{fields}__id': model_id})
 
-    # Excluir campos no relacionados
-    exclude_fields = []
-    for key, value in model_fields.items():
-        if key != model_name:
-            if isinstance(value, list):
-                exclude_fields.extend(value)
-            else:
-                exclude_fields.append(value)
-    
-    for field in exclude_fields:
-        queryset = queryset.exclude(**{f'{field}__isnull': False})
+    # Filtra el queryset inicial con la relación definida
+    print(f"Aplicando query: {query}")
+    queryset = queryset.filter(query)
 
+    # Filtrar por usuario autenticado (si aplica)
+    if user and user.is_authenticated:
+        queryset = queryset.filter(creado_por=user)
+
+    print(f"Queryset final: {queryset}")
     return queryset
+
