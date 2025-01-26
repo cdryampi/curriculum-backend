@@ -126,6 +126,7 @@ class UserProfileAdmin(admin.ModelAdmin):
             obj.creado_por = request.user
         obj.modificado_por = request.user  # Al modificar la imagen
         
+        
         if not obj.pk and UserProfile.objects.exists():
             self.message_user(
                 request,
@@ -138,17 +139,24 @@ class UserProfileAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
 
         if db_field.name == 'foto':
-            print(f"Middleware ejecutado para: {request.user}")
-
             if request.user.is_authenticated:
-                # Obtén el ID del perfil del usuario actual
-                user_profile_id = getattr(request.user.profile, 'id', None)
-                kwargs['queryset'] = filter_logo_queryset('UserProfile', model_id=user_profile_id, user=request.user)
+                user_profile = getattr(request.user, 'id', None)
+                if user_profile:
+                    kwargs['queryset'] = MediaFile.objects.filter(creado_por=user_profile)
+                    #Filtrar por la relación inversa desde UserProfile para que los usuarios solo vean sus propias imágenes de este modelo.
+                    filtro_por_modelos = filter_logo_queryset(
+                    model_name='UserProfile',
+                    model_id=user_profile,
+                    user=request.user
+                    )
+                    if filtro_por_modelos:
+                        kwargs['queryset'] = filtro_por_modelos
+                else:
+                    kwargs['queryset'] = MediaFile.objects.none()
             else:
                 kwargs['queryset'] = MediaFile.objects.none()
 
             kwargs['empty_label'] = 'Sin imagen asociada'
-
         if db_field.name == 'resume_file':
             if request.user.is_authenticated:
                 # Filtrar por la relación inversa desde UserProfile
