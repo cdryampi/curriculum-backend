@@ -4,6 +4,7 @@ from django_ckeditor_5.fields import CKEditor5Field
 from multimedia_manager.models import MediaFile, DocumentFile
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
+from django.urls import reverse
 from django.conf import settings
 
 
@@ -30,11 +31,15 @@ class CustomUser(AbstractUser):
         help_text=_("Ingrese la foto de perfil para los comentarios.")
     )
 
+    def get_absolute_url(self):
+        return None
+    
     class Meta(AbstractUser.Meta):
         swappable = 'AUTH_USER_MODEL'
 
     def __str__(self):
         return self.username
+    
 
 
 class UserProfile(models.Model):
@@ -147,7 +152,10 @@ class UserProfile(models.Model):
     def load(cls):
         obj, created = cls.objects.get_or_create(pk=1)
         return obj
-
+    
+    def get_absolute_url(self):
+        return None
+    
     def __str__(self):
         return f"Perfil de Usuario para {self.user}"
 
