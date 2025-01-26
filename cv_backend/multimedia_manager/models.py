@@ -58,7 +58,7 @@ class MediaFile(BaseModel):
     def __str__(self):
         return f"Media File {self.file.name}"
 
-class DocumentFile(models.Model):
+class DocumentFile(BaseModel):
     """
         Clase que representa a un fichero para el CV.
     """
@@ -81,4 +81,15 @@ class DocumentFile(models.Model):
         verbose_name_plural = "Archivos de Documentos"
 
     def __str__(self):
-        return f"{self.title} ({self.uploaded_at.strftime('%Y-%m-%d')})"
+        return f"{self.title} ({self.file.name})"
+    
+    def save(self, *args, **kwargs):
+        # Si es un nuevo objeto, se establece la fecha de creación y el usuario que lo crea
+        if not self.id:
+            self.created_at = timezone.now()
+            self.created_by = kwargs.get('user', None)
+        # Si se está modificando, se establece la fecha de modificación y el usuario que lo modifica
+        self.modified_at = timezone.now()
+        self.modified_by = kwargs.get('user', None)
+        
+        super().save(*args, **kwargs)

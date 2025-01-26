@@ -106,6 +106,7 @@ class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'nombre', 'apellido', 'profesion', 'ciudad', 'telefono', 'edad')
     search_fields = ('nombre', 'apellido', 'correo_electronico')
     list_filter = ('profesion', 'ciudad')
+    readonly_fields = ('user',)
     ordering = ('user',)
 
 
@@ -135,6 +136,7 @@ class UserProfileAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+
         if db_field.name == 'foto':
             print(f"Middleware ejecutado para: {request.user}")
 
@@ -146,6 +148,18 @@ class UserProfileAdmin(admin.ModelAdmin):
                 kwargs['queryset'] = MediaFile.objects.none()
 
             kwargs['empty_label'] = 'Sin imagen asociada'
+
+        if db_field.name == 'resume_file':
+            if request.user.is_authenticated:
+                # Filtrar por la relación inversa desde UserProfile
+                user_profile = getattr(request.user, 'profile', None)
+                print(f"User profile: {user_profile}")
+                if user_profile:
+                    kwargs['queryset'] = DocumentFile.objects.filter(creado_por=user_profile.user.pk)
+                else:
+                    kwargs['queryset'] = DocumentFile.objects.none()
+            else:
+                kwargs['queryset'] = DocumentFile.objects.none()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
