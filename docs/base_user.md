@@ -251,7 +251,7 @@ La aplicación `base_user` cuenta con las siguientes apis:
     ]
     ```
 
-2.  **`/base/userprofile/<int:pk>/`**: Permite obtener un perfil de usuario específico.`
+2.  **`/base/userprofile/<int:pk>/`**: Permite obtener un perfil de usuario específico.
 
 ```json
 {
