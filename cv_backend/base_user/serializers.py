@@ -16,13 +16,18 @@ class UserProfileSerializer(serializers.ModelSerializer):
         """
             Método que se encarga de serializar los metadatos de un perfil de usuario
         """
-        return MetaSerializer(obj.get_meta).data
-    
+        if hasattr(obj, 'meta') and obj.meta:
+            return MetaSerializer(obj.meta).data
+        return None  # Devuelve None si no existe
+
     def get_keywords(self, obj):
         """
             Método que se encarga de serializar las palabras clave de un perfil de usuario
         """
-        return KeywordsSerializer(obj.get_keywords, many=True).data
+        if hasattr(obj, 'keywords') and obj.keywords:
+            return KeywordsSerializer(obj.keywords, many=True).data
+        return None  # Devuelve None si no existe
+    
     class Meta:
         """
             Clase que se encarga de definir los campos a serializar

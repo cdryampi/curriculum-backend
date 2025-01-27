@@ -148,10 +148,14 @@ class UserProfile(models.Model):
         return self.PROFESIONES.get(self.profesion, 'Profesión no especificada')
     @property
     def get_meta(self):
-        return self.meta
+        if self.meta:
+            return self.meta
+        return None
     @property
     def get_keywords(self):
-        return self.keywords.all()
+        if self.keywords:
+            return self.keywords
+        return None
     
     @classmethod
     def load(cls):
