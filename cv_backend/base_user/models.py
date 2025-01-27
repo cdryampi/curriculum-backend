@@ -1,12 +1,10 @@
 from django.db import models
-from core.models import SingletonModel
 from django_ckeditor_5.fields import CKEditor5Field
 from multimedia_manager.models import MediaFile, DocumentFile
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
-from django.urls import reverse
 from django.conf import settings
-
+from colorfield.fields import ColorField
 
 
 class CustomUser(AbstractUser):
@@ -218,6 +216,11 @@ class Meta(models.Model):
         null=True,
         blank=True,
         verbose_name="Favicon"
+    )
+    meta_color = ColorField(
+        default='#FF0000',
+        verbose_name="Color de la Página",
+        help_text="Escoge un color para la página."
     )
 
 

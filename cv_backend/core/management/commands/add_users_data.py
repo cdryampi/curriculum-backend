@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from base_user.models import CustomUser, Keywords, Meta, UserProfile
 from multimedia_manager.models import MediaFile
 from django.contrib.auth.models import Group, User
+from django.core.management import call_command
 
 class Command(BaseCommand):
     help = 'Add sample users and groups to the database'
@@ -9,16 +10,10 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
         # Eliminar datos existentes
-        self.stdout.write(self.style.WARNING("Deleting existing data..."))
-        CustomUser.objects.all().delete()
-        UserProfile.objects.all().delete()
-        Group.objects.all().delete()
-
-        self.stdout.write(self.style.SUCCESS("Existing data deleted successfully!"))
+        call_command('delete_objects')
         
-        # Crear grupos
-        test_group, created = Group.objects.get_or_create(name='test')
-
+        # Crear y asignar permisos a los grupos
+        call_command('assign_group_permissions')
 
         # Crear usuarios con roles
         admin_users = [
@@ -40,6 +35,11 @@ class Command(BaseCommand):
                     'telefono': '123456789',
                     'edad': 45,
                     'keywords': ['gestión', 'administración', 'estrategia', 'organización', 'liderazgo'],
+                },
+                'meta': {
+                    'meta_title': 'curriculum de Juan',
+                    'meta_description': 'Curriculum de Juan Pérez',
+                    'meta_color': '#FF8E8E',
                 }
             },
             {
@@ -60,6 +60,11 @@ class Command(BaseCommand):
                     'edad': 30,
                     'keywords': ['explorador', 'curiosidad', 'descubrimiento', 'navegación', 'usuario'],
                 },
+                'meta': {
+                    'meta_title': 'curriculum de María',
+                    'meta_description': 'Curriculum de María López',
+                    'meta_color': '#8ECCFF',
+                }
             },
             {
                 'username': 'yampi',
@@ -80,6 +85,11 @@ class Command(BaseCommand):
                     'keywords': ['programación', 'desarrollo', 'software', 'web', 'móvil'],
 
                 },
+                'meta': {
+                    'meta_title': 'curriculum de Yampi',
+                    'meta_description': 'Curriculum de Yampi Yaku',
+                    'meta_color': '#9F1CBC',
+                }
             },
         ]
         guest_users = [
@@ -140,7 +150,7 @@ class Command(BaseCommand):
         for user_data in admin_users:
             user = CustomUser.objects.get(username=user_data['username'])
             profile = UserProfile.objects.get_or_create(user=user)[0]
-
+            # Asignar datos al perfil
             if profile:
                 profile.nombre = user_data['profile']['nombre']
                 profile.apellido = user_data['profile']['apellido']
@@ -158,7 +168,7 @@ class Command(BaseCommand):
                         f"Updated profile for user: {user.username}"
                     )
                 )
-
+                # Asignar keywords al perfil
                 for keyword in user_data['profile']['keywords']:
                     # Crear keywords pero las primary keys no son únicas y estan en el modelo Keywords
                     keyword_obj, created = Keywords.objects.get_or_create(keyword=keyword, user_profile=profile)
@@ -167,6 +177,19 @@ class Command(BaseCommand):
                             f"Added keyword: {keyword} to user: {user.username}"
                         )
                     )
+                # Asignar metadatos al perfil 
+                if user_data['meta']:
+                    meta, created = Meta.objects.get_or_create(user_profile=profile) # no es necesario la [0] porque es OneToOneField no es como el caso del modelos de UserProfile.
+                    if meta:
+                        meta.meta_title = user_data['meta']['meta_title']
+                        meta.meta_description = user_data['meta']['meta_description']
+                        meta.meta_color = user_data['meta']['meta_color']
+                        meta.save()
+                        self.stdout.write(
+                            self.style.SUCCESS(
+                                f"Added meta data to user: {user.username}"
+                            )
+                        )
         
 
         self.stdout.write(self.style.SUCCESS("Sample users, profiles, and related data added successfully!"))
