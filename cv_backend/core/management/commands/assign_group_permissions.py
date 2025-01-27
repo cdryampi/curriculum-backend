@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from base_user.models import UserProfile
+from base_user.models import UserProfile, Meta, Keywords
 from multimedia_manager.models import MediaFile, DocumentFile  # Importa todos los modelos relevantes
 
 class Command(BaseCommand):
@@ -27,6 +27,15 @@ class Command(BaseCommand):
                 {'codename': 'change_documentfile', 'model': DocumentFile},
                 {'codename': 'delete_documentfile', 'model': DocumentFile},
                 {'codename': 'view_documentfile', 'model': DocumentFile},
+                {'codename': 'add_meta', 'model': Meta},
+                {'codename': 'change_meta', 'model': Meta},
+                {'codename': 'delete_meta', 'model': Meta},
+                {'codename': 'view_meta', 'model': Meta},
+                {'codename': 'add_keywords', 'model': Keywords},
+                {'codename': 'change_keywords', 'model': Keywords},
+                {'codename': 'delete_keywords', 'model': Keywords},
+                {'codename': 'view_keywords', 'model': Keywords},
+
             ],
             'Guest': [
                 {'codename': 'view_userprofile', 'model': UserProfile},
