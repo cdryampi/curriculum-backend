@@ -142,9 +142,16 @@ class UserProfile(models.Model):
         on_delete=models.CASCADE,
         related_name='profile',
     )
+    
     @property
     def profesion_readable(self):
         return self.PROFESIONES.get(self.profesion, 'Profesión no especificada')
+    @property
+    def get_meta(self):
+        return self.meta
+    @property
+    def get_keywords(self):
+        return self.keywords.all()
     
     @classmethod
     def load(cls):
