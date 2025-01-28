@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from base_user.models import UserProfile, Meta, Keywords
 from multimedia_manager.models import MediaFile, DocumentFile  # Importa todos los modelos relevantes
-
+from redes_sociales.models import SocialMediaProfile  # Importa todos los modelos relevantes
 class Command(BaseCommand):
     help = 'Assign permissions to groups'
 
@@ -35,6 +35,10 @@ class Command(BaseCommand):
                 {'codename': 'change_keywords', 'model': Keywords},
                 {'codename': 'delete_keywords', 'model': Keywords},
                 {'codename': 'view_keywords', 'model': Keywords},
+                {'codename': 'add_socialmediaprofile', 'model': SocialMediaProfile},
+                {'codename': 'change_socialmediaprofile', 'model': SocialMediaProfile},
+                {'codename': 'delete_socialmediaprofile', 'model': SocialMediaProfile},
+                {'codename': 'view_socialmediaprofile', 'model': SocialMediaProfile},
 
             ],
             'Guest': [

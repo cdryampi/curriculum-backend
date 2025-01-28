@@ -146,15 +146,23 @@ class UserProfile(models.Model):
     @property
     def profesion_readable(self):
         return self.PROFESIONES.get(self.profesion, 'Profesión no especificada')
+    
     @property
     def get_meta(self):
         if self.meta:
             return self.meta
         return None
+    
     @property
     def get_keywords(self):
         if self.keywords:
             return self.keywords
+        return None
+    
+    @property
+    def get_socials_media(self):
+        if self.social_media_profiles:
+            return self.social_media_profiles
         return None
     
     @classmethod

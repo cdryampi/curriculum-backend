@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import UserProfile, Meta, Keywords
 from multimedia_manager.serializers import MediaFileSerializer, DocumentFileSerializer
+from redes_sociales.serializers import SocialMediaProfileSerializer
 
 class UserProfileSerializer(serializers.ModelSerializer):
     """
@@ -11,6 +12,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     profesion = serializers.CharField(source='get_profesion_display')
     meta = serializers.SerializerMethodField(read_only=True)
     keywords = serializers.SerializerMethodField(read_only=True)
+    socials_media = serializers.SerializerMethodField(read_only=True)
     
     def get_meta(self, obj):
         """
@@ -28,6 +30,14 @@ class UserProfileSerializer(serializers.ModelSerializer):
             return KeywordsSerializer(obj.keywords, many=True).data
         return None  # Devuelve None si no existe
     
+    def get_socials_media(self, obj):
+        """
+            Método que se encarga de serializar los perfiles de redes sociales de un perfil de usuario
+        """
+        if hasattr(obj, 'social_media_profiles') and obj.social_media_profiles:
+            return SocialMediaProfileSerializer(obj.social_media_profiles, many=True).data
+        return None
+
     class Meta:
         """
             Clase que se encarga de definir los campos a serializar

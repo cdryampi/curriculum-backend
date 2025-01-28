@@ -1,8 +1,7 @@
 from django.core.management.base import BaseCommand
-from base_user.models import CustomUser, Keywords, Meta, UserProfile
-from multimedia_manager.models import MediaFile
-from django.contrib.auth.models import Group, User
 from django.core.management import call_command
+from base_user.models import CustomUser, Keywords, Meta, UserProfile
+from redes_sociales.models import SocialMediaProfile
 
 class Command(BaseCommand):
     help = 'Add sample users and groups to the database'
@@ -40,7 +39,12 @@ class Command(BaseCommand):
                     'meta_title': 'curriculum de Juan',
                     'meta_description': 'Curriculum de Juan Pérez',
                     'meta_color': '#FF8E8E',
-                }
+                },
+                'redes_sociales': [
+                    {'social_media': 'facebook', 'profile_link': 'https://www.facebook.com/juan.perez'},
+                    {'social_media': 'twitter', 'profile_link': 'https://twitter.com/juan_perez'},
+                    {'social_media': 'linkedin', 'profile_link': 'https://www.linkedin.com/in/juan-perez'},
+                ]
             },
             {
                 'username': 'admin2',
@@ -64,7 +68,13 @@ class Command(BaseCommand):
                     'meta_title': 'curriculum de María',
                     'meta_description': 'Curriculum de María López',
                     'meta_color': '#8ECCFF',
-                }
+                },
+                'redes_sociales': [
+                    {'social_media': 'facebook', 'profile_link': 'https://www.facebook.com/maria.lopez'},
+                    {'social_media': 'twitter', 'profile_link': 'https://twitter.com/maria_lopez'},
+                    {'social_media': 'linkedin', 'profile_link': 'https://www.linkedin.com/in/maria-lopez'},
+                ]
+
             },
             {
                 'username': 'yampi',
@@ -89,7 +99,12 @@ class Command(BaseCommand):
                     'meta_title': 'curriculum de Yampi',
                     'meta_description': 'Curriculum de Yampi Yaku',
                     'meta_color': '#9F1CBC',
-                }
+                },
+                'redes_sociales': [
+                    {'social_media': 'facebook', 'profile_link': 'https://www.facebook.com/yampi.yaku'},
+                    {'social_media': 'twitter', 'profile_link': 'https://twitter.com/yampi_yaku'},
+                    {'social_media': 'linkedin', 'profile_link': 'https://www.linkedin.com/in/yampi-yaku'},
+                ]
             },
         ]
         guest_users = [
@@ -190,6 +205,20 @@ class Command(BaseCommand):
                                 f"Added meta data to user: {user.username}"
                             )
                         )
-        
+                # Asignar perfiles de redes sociales a los perfiles de Admin
+                if user_data['redes_sociales']:
+                    for social_data in user_data['redes_sociales']:
+                        social_data['user'] = user
+                        social_media_profile, created = SocialMediaProfile.objects.get_or_create(
+                            user = profile,
+                            social_media = social_data['social_media'],
+                            profile_link = social_data['profile_link']
+                        )
+                        if created:
+                            self.stdout.write(
+                                self.style.SUCCESS(
+                                    f"Added social media profile: {social_media_profile.social_media} to user: {user.username}"
+                                )
+                            )
 
         self.stdout.write(self.style.SUCCESS("Sample users, profiles, and related data added successfully!"))
