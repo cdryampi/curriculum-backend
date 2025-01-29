@@ -4,7 +4,7 @@ echo "==== Iniciando pipeline ===="
 echo "Entrado en el directorio de la aplicación"
 
 if [ -d "cv_backend" ]; then
-    cd cv_backend
+    cd /app/cv_backend
 fi
 
 echo "==== Ejecutando migraciones ===="
@@ -22,7 +22,7 @@ chmod -R 755 media/
 
 echo "retornando al directorio raíz"
 
-cd ..
+cd /app
 
 echo "==== Ejecutando tareas de post-deploy ===="
 
