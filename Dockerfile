@@ -1,6 +1,6 @@
 FROM python:3.12
 
-WORKDIR /app/cv_backend  # Ajusta si es necesario
+WORKDIR /app/cv_backend
 
 COPY . /app/
 
