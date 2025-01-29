@@ -33,3 +33,4 @@ else
 fi
 
 echo "==== Pipeline completada ===="
+echo "==== Iniciando servidor ===="
