@@ -88,6 +88,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.csrf',
             ],
         },
     },
@@ -201,10 +202,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Cors
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
+#todos los dominios permitidos
+'*'
 ]
-CORS_ALLOW_ALL_ORIGINS = config('DEBUG', default=False, cast=bool)
+CORS_ALLOW_ALL_ORIGINS = config('DEBUG', default=True, cast=bool)
 
 CORS_ALLOW_METHODS = [
     "GET",
