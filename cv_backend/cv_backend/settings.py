@@ -197,14 +197,13 @@ JAZZMIN_SETTINGS = {
     "user_avatar": None,  # Personaliza esto según tus necesidades
 }
 
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Cors
+CORS_ALLOW_ALL=True
 
-CORS_ALLOWED_ORIGINS = [
-#todos los dominios permitidos
-'*'
-]
+
 CSRF_TRUSTED_ORIGINS = [
     "https://curriculum-backend-production.up.railway.app",
 ]
