@@ -37,4 +37,6 @@ else
 fi
 
 echo "==== Pipeline completada ===="
+echo "==== Estructura del proyecto en Railway ===="
+ls -R /app/cv_backend
 echo "==== Iniciando servidor ===="
