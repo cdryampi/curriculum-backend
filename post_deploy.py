@@ -14,4 +14,4 @@ from django.core.management import call_command
 
 # Ejecutar el comando de post-deploy
 print("Ejecutando el comando de assign_users_data")
-call_command('assign_users_data')
+call_command('add_users_data')
