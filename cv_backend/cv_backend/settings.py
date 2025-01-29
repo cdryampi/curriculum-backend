@@ -205,6 +205,10 @@ CORS_ALLOWED_ORIGINS = [
 #todos los dominios permitidos
 '*'
 ]
+CSRF_TRUSTED_ORIGINS = [
+    "https://curriculum-backend-production.up.railway.app",
+]
+
 CORS_ALLOW_ALL_ORIGINS = config('DEBUG', default=True, cast=bool)
 
 CORS_ALLOW_METHODS = [
@@ -220,7 +224,8 @@ CORS_ALLOW_HEADERS = [
     "authorization",
     "content-type",
     "accept",
-    "x-csrf-token"
+    "x-csrf-token",
+    "x-requested-with"
 ]
 
 
