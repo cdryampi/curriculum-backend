@@ -2,7 +2,7 @@ import os
 import django
 
 # Configurar Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'provincias.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cv_backend.settings')
 django.setup()
 
 from django.core.management import call_command
