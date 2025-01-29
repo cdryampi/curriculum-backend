@@ -42,7 +42,6 @@ class UserProfilePrivateView(generics.RetrieveAPIView):
     """
         Clase encargada de manejar las peticiones GET de un perfil de usuario filtrado por id del usuario
     """
-    queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
 
@@ -51,4 +50,4 @@ class UserProfilePrivateView(generics.RetrieveAPIView):
     """
 
     def get_object(self):
-        return self.request.user.profile
+        return UserProfile.objects.get(user=self.request.user)
