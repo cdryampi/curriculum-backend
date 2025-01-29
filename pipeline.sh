@@ -1,6 +1,10 @@
 #!/bin/bash
 echo "==== Iniciando pipeline ===="
 
+# Definir el módulo de configuración de Django
+export DJANGO_SETTINGS_MODULE=cv_backend.settings
+export PYTHONPATH=/app  # Asegurar que Python encuentra el módulo de Django
+
 echo "Entrado en el directorio de la aplicación"
 
 if [ -d "cv_backend" ]; then
