@@ -1,17 +1,17 @@
-# 🚀 Changelog - Versión 0.1
+# 🚀 Changelog - Versión 0.1.5
 
 ## ✅ Cambios en esta versión:
 
-- Configuración de CORS en `settings.py`.
-- Middleware `corsheaders` agregado correctamente.
+- Configuración de Swagger y redocs en `settings.py`.
+- index.html en la carpeta `templates` para mostrar el proyecto.
 
 ## 🛠️ Mejoras y Fixes:
 
-- Se resolvió el problema de `401 Unauthorized` en las peticiones.
+- Se resolvió el de las rutas del Dockerfile.
 
-## lista de tareas a realizar:
+## lista de tareas completadas de la versión 0.1:
 
-- [] Ver si funciona el CORS en producción.
-- [] Agregar más pruebas unitarias.
-- [] Agregar más pruebas de integración.
-- [] probar el despliegue en Railway.
+- [x] Ver si funciona el CORS en producción.
+- [x] Agregar más pruebas unitarias.
+- [x] Agregar más pruebas de integración.
+- [x] probar el despliegue en Railway.

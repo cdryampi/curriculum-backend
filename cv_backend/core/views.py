@@ -3,8 +3,52 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from django.views.generic import TemplateView
 # Create your views here.
 
+class IndexView(TemplateView):
+    """
+        Clase encargada de mostrar la página de inicio con los endpoints disponibles
+    """
+    def get(self, request, *args, **kwargs):
+        """
+            Método que se encarga de manejar la petición GET y retornar la página de inicio
+                path('userprofile/<int:id>/', UserProfileDetailView.as_view(), name='userprofile-detail'),
+                path('userprofile/', UserProfileListView.as_view(), name='userprofile-list'),
+                path('userprofile/private/', UserProfilePrivateView.as_view(), name='userprofile-private'),
+        """
+
+        END_POINTS = {
+            'Ver perfil de un usuario': 
+            {
+                'id':1,
+                'url': '/userprofile/<int:id>/',
+                'method': 'GET',
+                'description': 'Muestra el perfil de un usuario específico',
+                'params': 'id: int',
+                'warning': 'Solo los usuarios autenticados pueden acceder a este endpoint'
+            },
+
+            'Ver lista de perfiles de usuario': 
+            {
+                'id':2,
+                'url': '/userprofile/',
+                'method': 'GET',
+                'description': 'Muestra la lista de perfiles de usuario',
+                'warning': 'Solo los usuarios autenticados pueden acceder a este endpoint'
+            },
+            'Ver perfil propio':
+            {
+                'id':3,
+                'url': '/userprofile/private/',
+                'method': 'GET',
+                'description': 'Muestra el perfil del usuario autenticado',
+                'warning': 'Solo los usuarios autenticados pueden acceder a este endpoint'
+            },
+        }
+
+        return render(request, 'index.html', {'endpoints': END_POINTS})
+    
 class CustomAuthToken(ObtainAuthToken):
     """
         Clase encargada de manejar la autenticación personalizada y retornar el token de autenticación
