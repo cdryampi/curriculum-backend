@@ -39,6 +39,8 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
 
 INSTALLED_APPS = [
     'rest_framework',
+    'drf_yasg',
+    'drf_spectacular',
     'rest_framework.authtoken',
     'django_recaptcha',
     'projects',
@@ -216,6 +218,8 @@ AUTH_USER_MODEL = 'base_user.CustomUser'
 
 # Rest framework
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.openapi.AutoSchema',
+
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication', # 🔑 Autenticación por token
         'rest_framework.authentication.SessionAuthentication', # 🔒 Autenticación por sesión
@@ -223,4 +227,5 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',  # 🔒 Bloquea usuarios no autenticados
     ],
+
 }
