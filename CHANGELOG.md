@@ -8,6 +8,7 @@
 ## 🛠️ Mejoras y Fixes:
 
 - Se resolvió el de las rutas del Dockerfile.
+- Se eliminó los ficheros fantasmas de las carpetas `migrations` y `__pycache__`.
 
 ## lista de tareas completadas de la versión 0.1:
 
