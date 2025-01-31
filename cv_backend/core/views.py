@@ -46,8 +46,11 @@ class IndexView(TemplateView):
                 'warning': 'Solo los usuarios autenticados pueden acceder a este endpoint'
             },
         }
+        is_login = False
+        if request.user.is_authenticated:
+            is_login = True
 
-        return render(request, 'index.html', {'endpoints': END_POINTS})
+        return render(request, 'index.html', {'endpoints': END_POINTS, 'is_login': is_login})
     
 class CustomAuthToken(ObtainAuthToken):
     """
