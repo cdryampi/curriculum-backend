@@ -27,10 +27,13 @@ class MediaFileSerializer(serializers.ModelSerializer):
         fields = ['file', 'title', 'uploaded_at', 'image_for_pc_url', 'image_for_tablet_url', 'image_for_mobile_url']
 
     def get_image_for_pc_url(self, obj):
-        return URL_SERVER+obj.image_for_pc.url if obj.image_for_pc else None
+        request = self.context.get('request') # recupera el request
+        return request.build_absolute_uri(obj.image_for_pc.url) if obj.image_for_pc else None
 
     def get_image_for_tablet_url(self, obj):
-        return URL_SERVER+obj.image_for_tablet.url if obj.image_for_tablet else None
+        request = self.context.get('request') # recupera el request
+        return request.build_absolute_uri(obj.image_for_tablet.url) if obj.image_for_tablet else None
 
     def get_image_for_mobile_url(self, obj):
-        return URL_SERVER+obj.image_for_mobile.url if obj.image_for_mobile else None
+        request = self.context.get('request') # recupera el request
+        return request.build_absolute_uri(obj.image_for_mobile.url) if obj.image_for_mobile else None

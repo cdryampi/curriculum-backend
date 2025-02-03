@@ -38,6 +38,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'rest_framework',
     'drf_yasg',
     'drf_spectacular',
@@ -46,7 +47,6 @@ INSTALLED_APPS = [
     'projects',
     'coment',
     'colorfield',
-    'corsheaders',
     'cv_backend',
     'base_user',
     'services',
@@ -67,16 +67,14 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
 ]
 
 ROOT_URLCONF = 'cv_backend.urls'
@@ -92,6 +90,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.csrf',
             ],
         },
     },
@@ -200,13 +199,36 @@ JAZZMIN_SETTINGS = {
     "user_avatar": None,  # Personaliza esto según tus necesidades
 }
 
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+# Cors
+CORS_ALLOW_ALL=True
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://curriculum-backend-production.up.railway.app",
 ]
+
+CORS_ALLOW_ALL_ORIGINS = config('DEBUG', default=True, cast=bool)
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS"
+]
+
+CORS_ALLOW_HEADERS = [
+    "authorization",
+    "content-type",
+    "accept",
+    "x-csrf-token",
+    "x-requested-with"
+]
+
 
 RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY', default='6Lccat8pAAAAAFT2Xlgt0STyZHYVM2_WP5oYLj1')
 RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY', default='6Lccat8pAAAAAFT2Xlgt0STyZHYVM2_WP5oYLj1')

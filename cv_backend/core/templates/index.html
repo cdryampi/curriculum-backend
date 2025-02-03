@@ -83,6 +83,7 @@
     <section
       class="container mx-auto max-w-2xl mt-10 p-6 bg-white shadow-lg rounded-lg"
     >
+      {% if is_login %}
       <div class="text-center mt-5">
         <a
           href="/swagger/"
@@ -94,6 +95,34 @@
           class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition ml-3"
           >📘 Ver Redoc</a
         >
+      </div>
+      {% endif %}
+    </section>
+    <section
+      class="container mx-auto max-w-2xl mt-10 p-6 bg-white shadow-lg rounded-lg"
+    >
+      <div class="text-center mt-5">
+        {% if is_login %}
+        <a
+          href="/admin/"
+          class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+          >🔒 Ir a la administración</a
+        >
+        {% else %}
+        <div class="flex gap-5 flex-col">
+          <p>
+            Para acceder al panel de administración, por favor, inicie sesión.
+          </p>
+          <p>
+            <a
+              href="/admin/login/"
+              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+              >🔒 Loginarse</a
+            >
+          </p>
+        </div>
+
+        {% endif %}
       </div>
     </section>
 
