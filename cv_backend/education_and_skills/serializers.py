@@ -5,6 +5,9 @@ from core.serializers import TagSerializer
 
 
 class EducationSerializer(serializers.ModelSerializer):
+    """
+        Clase encargada de serializar los datos de una educación
+    """
     short_description_preview = serializers.CharField (
         source='get_short_description_preview'
     )
@@ -15,16 +18,21 @@ class EducationSerializer(serializers.ModelSerializer):
 
 
 class SkillSerializer(serializers.ModelSerializer):
-
+    """
+        Clase encargada de serializar los datos de una habilidad
+    """
     logo = MediaFileSerializer(read_only=True)
-    categoria = serializers.CharField(source='get_category_readable')
+    #categoria = serializers.CharField(source='get_category_readable') # no es necesario
 
     class Meta:
         model = Skill
         fields = '__all__'
 
 class CourseSerializer(serializers.ModelSerializer):
-
+    """
+        Clase encargada de serializar los datos de un curso
+    """
+    
     platform = serializers.CharField(source='get_platform_readable')
 
     class Meta:

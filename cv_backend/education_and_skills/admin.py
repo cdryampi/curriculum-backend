@@ -12,23 +12,40 @@ class EducationAdmin(admin.ModelAdmin):
     list_filter = ('institution', 'start_year', 'end_year')
     filter_horizontal = ('tags',)
     ordering = ('start_year',)
+    readonly_fields = ('user_profile',)
 
     def save_model(self, request, obj, form, change):
-        # Si hay solo un UserProfile, asociar automáticamente el objeto Education con él
-        if UserProfile.objects.count() == 1:
-            obj.user_profile = UserProfile.objects.first()
+        """
+        Asigna automáticamente el usuario actual al objeto Education y establece is_staff en True si el usuario es un administrador.
+        """
+        if not obj.user_profile_id:
+            obj.user_profile = UserProfile.objects.get(user=request.user)
         super().save_model(request, obj, form, change)
 
-    def get_form(self, request, obj=None, **kwargs):
-        form = super().get_form(request, obj, **kwargs)
-        
-        # Si hay solo un UserProfile, establecer automáticamente el user_profile en el formulario
-        if UserProfile.objects.count() == 1 and obj is None:
-            default_user_profile = UserProfile.objects.first()
-            form.base_fields['user_profile'].initial = default_user_profile
-            form.base_fields['user_profile'].widget.attrs['readonly'] = True
-        return form
-
+    def get_queryset(self, request):
+        """
+        Filtra los usuarios para que los administradores solo puedan ver sus propios perfiles.
+        """
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs  # Los superusuarios pueden ver todo
+        return qs.filter(user_profile__user=request.user.id)  # Los administradores ven solo su propio usuario
+   
+    def has_change_permission(self, request, obj=None):
+        """
+        Verifica que los administradores solo puedan cambiar su propia cuenta.
+        """
+        if obj is not None and obj.user_profile.user != request.user:
+            return False
+        return super().has_delete_permission(request, obj)
+    
+    def has_delete_permission(self, request, obj=None):
+        """
+        Verifica que los administradores solo puedan eliminar su propio perfil.
+        """
+        if obj is not None and obj.user_profile.user != request.user:
+            return False
+        return super().has_delete_permission(request, obj)
 
 
 @admin.register(Skill)
@@ -38,32 +55,65 @@ class SkillAdmin(admin.ModelAdmin):
     search_fields = ('title',)
     list_filter = ('category',)
     ordering = ('title',)
+    readonly_fields = ('user_profile',)
 
     def save_model(self, request, obj, form, change):
-        # Si hay solo un UserProfile, asociar automáticamente el objeto Education con él
-        if UserProfile.objects.count() == 1:
-            obj.user_profile = UserProfile.objects.first()
+        """
+        Asigna automáticamente el usuario actual al objeto Education y establece is_staff en True si el usuario es un administrador.
+        """
+        if not obj.user_profile_id:
+            obj.user_profile = UserProfile.objects.get(user=request.user)
         super().save_model(request, obj, form, change)
 
-    def get_form(self, request, obj=None, **kwargs):
-        form = super().get_form(request, obj, **kwargs)
-        
-        # Si hay solo un UserProfile, establecer automáticamente el user_profile en el formulario
-        if UserProfile.objects.count() == 1 and obj is None:
-            default_user_profile = UserProfile.objects.first()
-            form.base_fields['user_profile'].initial = default_user_profile
-            form.base_fields['user_profile'].widget.attrs['readonly'] = True
-        return form
+    def get_queryset(self, request):
+        """
+        Filtra los usuarios para que los administradores solo puedan ver sus propios perfiles.
+        """
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs  # Los superusuarios pueden ver todo
+        return qs.filter(user_profile__user=request.user.id)  # Los administradores ven solo su propio usuario
+   
+    def has_change_permission(self, request, obj=None):
+        """
+        Verifica que los administradores solo puedan cambiar su propia cuenta.
+        """
+        if obj is not None and obj.user_profile.user != request.user:
+            return False
+        return super().has_delete_permission(request, obj)
     
+    def has_delete_permission(self, request, obj=None):
+        """
+        Verifica que los administradores solo puedan eliminar su propio perfil.
+        """
+        if obj is not None and obj.user_profile.user != request.user:
+            return False
+        return super().has_delete_permission(request, obj)
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'logo':
-            skill_id = None
-            model_name = Skill.__name__
-            if hasattr(request, 'resolver_match') and 'object_id' in request.resolver_match.kwargs:
-                skill_id = request.resolver_match.kwargs['object_id']
+            if request.user.is_authenticated:
+                user_profile = UserProfile.objects.get(user=request.user)
+                skill_id = request.resolver_match.kwargs.get('object_id')
+                # Filtrar solo los archivos multimedia del usuario actual
+                if user_profile:
+                    kwargs["queryset"] = MediaFile.objects.filter(
+                        creado_por = user_profile.user.id
+                    )
+                    filtro_por_modelos = filter_logo_queryset(
+                        model_name='Skill',
+                        model_id= skill_id,
+                        user=request.user
+                    )
+                    if filtro_por_modelos:
+                        kwargs["queryset"] = filtro_por_modelos
+                else:
+                    kwargs["queryset"] = MediaFile.objects.none()
+            else:
+                kwargs["queryset"] = MediaFile.objects.none()
 
-            kwargs['queryset'] = filter_logo_queryset(model_name,skill_id)
-            kwargs['empty_label'] = 'Sin imagen asociada'
+        kwargs["empty_label"] = "Sin imagen asociada"
+
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 @admin.register(Course)
@@ -73,20 +123,38 @@ class CourseAdmin(admin.ModelAdmin):
     search_fields = ('title', 'platform')
     list_filter = ('platform', 'completion_year')
     ordering = ('completion_year',)
+    readonly_fields = ('user_profile',)
 
 
     def save_model(self, request, obj, form, change):
-        # Si hay solo un UserProfile, asociar automáticamente el objeto Education con él
-        if UserProfile.objects.count() == 1:
-            obj.user_profile = UserProfile.objects.first()
+        """
+            Asigna automáticamente el usuario actual al objeto Course.
+        """
+        if not obj.user_profile_id:
+            obj.user_profile = UserProfile.objects.get(user=request.user)
         super().save_model(request, obj, form, change)
 
-    def get_form(self, request, obj=None, **kwargs):
-        form = super().get_form(request, obj, **kwargs)
-        
-        # Si hay solo un UserProfile, establecer automáticamente el user_profile en el formulario
-        if UserProfile.objects.count() == 1 and obj is None:
-            default_user_profile = UserProfile.objects.first()
-            form.base_fields['user_profile'].initial = default_user_profile
-            form.base_fields['user_profile'].widget.attrs['readonly'] = True
-        return form
+    def get_queryset(self, request):
+        """
+        Filtra los usuarios para que los administradores solo puedan ver sus propios perfiles.
+        """
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs  # Los superusuarios pueden ver todo
+        return qs.filter(user_profile__user=request.user.id)  # Los administradores ven solo su propio usuario
+   
+    def has_change_permission(self, request, obj=None):
+        """
+        Verifica que los administradores solo puedan cambiar su propia cuenta.
+        """
+        if obj is not None and obj.user_profile.user != request.user:
+            return False
+        return super().has_delete_permission(request, obj)
+    
+    def has_delete_permission(self, request, obj=None):
+        """
+        Verifica que los administradores solo puedan eliminar su propio perfil.
+        """
+        if obj is not None and obj.user_profile.user != request.user:
+            return False
+        return super().has_delete_permission(request, obj)
