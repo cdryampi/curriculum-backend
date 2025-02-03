@@ -43,6 +43,36 @@ class MediaFile(BaseModel):
         options={'quality': 90}
     )
 
+    def generate_images(self):
+        """
+        Método para generar las versiones de la imagen si no existen.
+        Aquí deberías usar Pillow para redimensionar las imágenes.
+        """
+        if self.file and (not self.image_for_pc or not self.image_for_tablet or not self.image_for_mobile):
+            from PIL import Image
+            import os
+            
+            file_path = self.file.path  # Ruta de la imagen original
+            img = Image.open(file_path)
+
+            # Generar versiones escaladas
+            sizes = {
+                'pc': (1920, 1080),
+                'tablet': (1024, 768),
+                'mobile': (480, 320)
+            }
+
+            for key, size in sizes.items():
+                new_path = f"media/{key}/{os.path.basename(file_path)}"
+                img_resized = img.resize(size, Image.ANTIALIAS)
+                img_resized.save(new_path)
+
+                # Asigna la nueva imagen al campo correspondiente
+                setattr(self, f'image_for_{key}', new_path)
+
+            self.save()  # Guarda las rutas en la base de datos
+    
+
     def save(self, *args, **kwargs):
         # Si es un nuevo objeto, se establece la fecha de creación y el usuario que lo crea
         if not self.id:

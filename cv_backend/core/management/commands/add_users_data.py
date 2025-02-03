@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from base_user.models import CustomUser, Keywords, Meta, UserProfile
 from redes_sociales.models import SocialMediaProfile
-
+from education_and_skills.models import Education, Skill, Course
 class Command(BaseCommand):
     help = 'Add sample users and groups to the database'
 
@@ -44,6 +44,21 @@ class Command(BaseCommand):
                     {'social_media': 'facebook', 'profile_link': 'https://www.facebook.com/juan.perez'},
                     {'social_media': 'twitter', 'profile_link': 'https://twitter.com/juan_perez'},
                     {'social_media': 'linkedin', 'profile_link': 'https://www.linkedin.com/in/juan-perez'},
+                ],
+                'skills':[
+                    {'category': 'Gestión', 'title': 'Liderazgo', 'proficiency': 90},
+                    {'category': 'Gestión', 'title': 'Gestión de equipos', 'proficiency': 85},
+                    {'category': 'Gestión', 'title': 'Estrategia', 'proficiency': 80},
+                ],
+                'educations':[
+                    {"title": "Ingeniería de Sistemas", "institution": "Universidad Nacional Mayor de San Marcos", "start_year": 2010, "end_year": 2015, "subtitle": "Ingeniero de Sistemas", "description": "Estudié Ingeniería de Sistemas en la Universidad Nacional Mayor de San Marcos."},
+                    {"title": "Maestría en Ingeniería de Software", "institution": "Universidad Nacional Mayor de San Marcos", "start_year": 2016, "end_year": 2018, "subtitle": "Maestro en Ingeniería de Software", "description": "Estudié una maestría en Ingeniería de Software en la Universidad Nacional Mayor de San Marcos."},
+                    {"title": "Doctorado en Ciencias de la Computación", "institution": "Universidad Nacional Mayor de San Marcos", "start_year": 2019, "end_year": 2023, "subtitle": "Doctor en Ciencias de la Computación", "description": "Estudié un doctorado en Ciencias de la Computación en la Universidad Nacional Mayor de San Marcos."},
+                ],
+                'courses':[
+                    {'title':'Curso de Python', 'platform': 'Udemy', 'completion_year': 2022,'certificate_url': 'https://www.udemy.com/certificate/python', 'description': 'Curso de Python en Udemy.'},
+                    {'title':'Curso de Django', 'platform': 'OPENWEBINARS', 'completion_year': 2022,'certificate_url': 'https://www.udemy.com/certificate/django', 'description': 'Curso de Django en Udemy.'},
+                    {'title':'Curso de React', 'platform': 'Platzi', 'completion_year': 2022,'certificate_url': 'https://www.udemy.com/certificate/react', 'description': 'Curso de React en Udemy.'},
                 ]
             },
             {
@@ -73,6 +88,21 @@ class Command(BaseCommand):
                     {'social_media': 'facebook', 'profile_link': 'https://www.facebook.com/maria.lopez'},
                     {'social_media': 'twitter', 'profile_link': 'https://twitter.com/maria_lopez'},
                     {'social_media': 'linkedin', 'profile_link': 'https://www.linkedin.com/in/maria-lopez'},
+                ],
+                'skills':[
+                    {'category': 'Frontend', 'title': 'HTML', 'proficiency': 90},
+                    {'category': 'Frontend', 'title': 'CSS', 'proficiency': 85},
+                    {'category': 'Frontend', 'title': 'JavaScript', 'proficiency': 80},
+                ],
+                'educations':[
+                    {"title": "Ingeniería de Sistemas", "institution": "Universidad Nacional Mayor de San Marcos", "start_year": 2010, "end_year": 2015, "subtitle": "Ingeniero de Sistemas", "description": "Estudié Ingeniería de Sistemas en la Universidad Nacional Mayor de San Marcos."},
+                    {"title": "Maestría en Ingeniería de Software", "institution": "Universidad Nacional Mayor de San Marcos", "start_year": 2016, "end_year": 2018, "subtitle": "Maestro en Ingeniería de Software", "description": "Estudié una maestría en Ingeniería de Software en la Universidad Nacional Mayor de San Marcos."},
+                    {"title": "Doctorado en Ciencias de la Computación", "institution": "Universidad Nacional Mayor de San Marcos", "start_year": 2019, "end_year": 2023, "subtitle": "Doctor en Ciencias de la Computación", "description": "Estudié un doctorado en Ciencias de la Computación en la Universidad Nacional Mayor de San Marcos."},
+                ],
+                'courses':[
+                    {'title':'Curso de Python', 'platform': 'Udemy', 'completion_year': 2022,'certificate_url': 'https://www.udemy.com/certificate/python', 'description': 'Curso de Python en Udemy.'},
+                    {'title':'Curso de Django', 'platform': 'OPENWEBINARS', 'completion_year': 2022,'certificate_url': 'https://www.udemy.com/certificate/django', 'description': 'Curso de Django en Udemy.'},
+                    {'title':'Curso de React', 'platform': 'Platzi', 'completion_year': 2022,'certificate_url': 'https://www.udemy.com/certificate/react', 'description': 'Curso de React en Udemy.'},
                 ]
 
             },
@@ -104,6 +134,28 @@ class Command(BaseCommand):
                     {'social_media': 'facebook', 'profile_link': 'https://www.facebook.com/yampi.yaku'},
                     {'social_media': 'twitter', 'profile_link': 'https://twitter.com/yampi_yaku'},
                     {'social_media': 'linkedin', 'profile_link': 'https://www.linkedin.com/in/yampi-yaku'},
+                ],
+                'skills':[
+                    {'category': 'Frontend', 'title': 'HTML', 'proficiency': 90},
+                    {'category': 'Frontend', 'title': 'CSS', 'proficiency': 85},
+                    {'category': 'Frontend', 'title': 'JavaScript', 'proficiency': 80},
+                    {'category': 'Frontend', 'title': 'React', 'proficiency': 75},
+                    {'category': 'Frontend', 'title': 'Vue', 'proficiency': 70},
+                    {'category': 'Backend', 'title': 'Python', 'proficiency': 90},
+                    {'category': 'Backend', 'title': 'Django', 'proficiency': 85},
+                    {'category': 'Backend', 'title': 'Flask', 'proficiency': 80},
+                    {'category': 'Mobile', 'title': 'Android', 'proficiency': 75},
+                    {'category': 'Mobile', 'title': 'iOS', 'proficiency': 70},
+                ],
+                'educations':[
+                    {'title': 'Ingeniería de Sistemas', 'institution': 'Universidad Nacional Mayor de San Marcos', 'start_year': 2010, 'end_year': 2015, 'subtitle': 'Ingeniero de Sistemas', 'description': 'Estudié Ingeniería de Sistemas en la Universidad Nacional Mayor de San Marcos.'},
+                    {'title': 'Maestría en Ingeniería de Software', 'institution': 'Universidad Nacional Mayor de San Marcos', 'start_year': 2016, 'end_year': 2018, 'subtitle': 'Maestro en Ingeniería de Software', 'description': 'Estudié una maestría en Ingeniería de Software en la Universidad Nacional Mayor de San Marcos.'},
+                    {'title': 'Doctorado en Ciencias de la Computación', 'institution': 'Universidad Nacional Mayor de San Marcos', 'start_year': 2019, 'end_year': 2023, 'subtitle': 'Doctor en Ciencias de la Computación', 'description': 'Estudié un doctorado en Ciencias de la Computación en la Universidad Nacional Mayor de San Marcos.'},
+                ],
+                'courses':[
+                    {'title':'Curso de Python', 'platform': 'Udemy', 'completion_year': 2022,'certificate_url': 'https://www.udemy.com/certificate/python', 'description': 'Curso de Python en Udemy.'},
+                    {'title':'Curso de Django', 'platform': 'OPENWEBINARS', 'completion_year': 2022,'certificate_url': 'https://www.udemy.com/certificate/django', 'description': 'Curso de Django en Udemy.'},
+                    {'title':'Curso de React', 'platform': 'Platzi', 'completion_year': 2022,'certificate_url': 'https://www.udemy.com/certificate/react', 'description': 'Curso de React en Udemy.'},
                 ]
             },
         ]
@@ -218,6 +270,57 @@ class Command(BaseCommand):
                             self.stdout.write(
                                 self.style.SUCCESS(
                                     f"Added social media profile: {social_media_profile.social_media} to user: {user.username}"
+                                )
+                            )
+                # Asignar habilidades al perfil
+                if user_data['skills']:
+                    for skill_data in user_data['skills']:
+                        skill, created = Skill.objects.get_or_create(
+                            user_profile = profile,
+                            category = skill_data['category'],
+                            title = skill_data['title'],
+                            proficiency = skill_data['proficiency']
+                        )
+                        if created:
+                            self.stdout.write(
+                                self.style.SUCCESS(
+                                    f"Added skill: {skill.title} to user: {user.username}"
+                                )
+                            )
+                # Asignar educaciones al perfil
+                if user_data['educations']:
+                    for education_data in user_data['educations']:
+                        education, created = Education.objects.get_or_create(
+                            user_profile = profile,
+                            title = education_data['title'],
+                            institution = education_data['institution'],
+                            start_year = education_data['start_year'],
+                            end_year = education_data['end_year'],
+                            subtitle = education_data['subtitle'],
+                            description = education_data['description']
+                        )
+                        if created:
+                            self.stdout.write(
+                                self.style.SUCCESS(
+                                    f"Added education: {education.title} to user: {user.username}"
+                                )
+                            )
+                # Asignar cursos al perfil
+
+                if user_data['courses']:
+                    for course_data in user_data['courses']:
+                        course, created = Course.objects.get_or_create(
+                            user_profile = profile,
+                            title = course_data['title'],
+                            platform = course_data['platform'],
+                            completion_year = course_data['completion_year'],
+                            certificate_url = course_data['certificate_url'],
+                            description = course_data['description']
+                        )
+                        if created:
+                            self.stdout.write(
+                                self.style.SUCCESS(
+                                    f"Added course: {course.title} to user: {user.username}"
                                 )
                             )
 

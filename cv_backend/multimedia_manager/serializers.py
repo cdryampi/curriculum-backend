@@ -26,14 +26,19 @@ class MediaFileSerializer(serializers.ModelSerializer):
         model = MediaFile
         fields = ['file', 'title', 'uploaded_at', 'image_for_pc_url', 'image_for_tablet_url', 'image_for_mobile_url']
 
+    def get_image_url(self, obj, attr_name):
+        request = self.context.get('request')
+        file_attr = getattr(obj, attr_name, None)
+        
+        if file_attr and hasattr(file_attr, 'url'):  # Verifica si tiene URL
+            return request.build_absolute_uri(file_attr.url) if request else file_attr.url
+        return None  # Retorna None si no existe el archivo
+
     def get_image_for_pc_url(self, obj):
-        request = self.context.get('request') # recupera el request
-        return request.build_absolute_uri(obj.image_for_pc.url) if obj.image_for_pc else None
+        return self.get_image_url(obj, 'image_for_pc')
 
     def get_image_for_tablet_url(self, obj):
-        request = self.context.get('request') # recupera el request
-        return request.build_absolute_uri(obj.image_for_tablet.url) if obj.image_for_tablet else None
+        return self.get_image_url(obj, 'image_for_tablet')
 
     def get_image_for_mobile_url(self, obj):
-        request = self.context.get('request') # recupera el request
-        return request.build_absolute_uri(obj.image_for_mobile.url) if obj.image_for_mobile else None
+        return self.get_image_url(obj, 'image_for_mobile')

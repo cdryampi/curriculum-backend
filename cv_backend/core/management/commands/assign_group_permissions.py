@@ -4,6 +4,8 @@ from django.contrib.contenttypes.models import ContentType
 from base_user.models import UserProfile, Meta, Keywords
 from multimedia_manager.models import MediaFile, DocumentFile  # Importa todos los modelos relevantes
 from redes_sociales.models import SocialMediaProfile  # Importa todos los modelos relevantes
+from education_and_skills import models as education_and_skills_models  # Importa todos los modelos relevantes
+from core.models import Tag # Importa todos los modelos relevantes
 class Command(BaseCommand):
     help = 'Assign permissions to groups'
 
@@ -39,7 +41,21 @@ class Command(BaseCommand):
                 {'codename': 'change_socialmediaprofile', 'model': SocialMediaProfile},
                 {'codename': 'delete_socialmediaprofile', 'model': SocialMediaProfile},
                 {'codename': 'view_socialmediaprofile', 'model': SocialMediaProfile},
-
+                {'codename': 'add_education', 'model': education_and_skills_models.Education},
+                {'codename': 'change_education', 'model': education_and_skills_models.Education},
+                {'codename': 'delete_education', 'model': education_and_skills_models.Education},
+                {'codename': 'view_education', 'model': education_and_skills_models.Education},
+                {'codename': 'add_skill', 'model': education_and_skills_models.Skill},
+                {'codename': 'change_skill', 'model': education_and_skills_models.Skill},
+                {'codename': 'delete_skill', 'model': education_and_skills_models.Skill},
+                {'codename': 'view_skill', 'model': education_and_skills_models.Skill},
+                {'codename': 'add_course', 'model': education_and_skills_models.Course},
+                {'codename': 'change_course', 'model': education_and_skills_models.Course},
+                {'codename': 'delete_course', 'model': education_and_skills_models.Course},
+                {'codename': 'view_course', 'model': education_and_skills_models.Course},
+                {'codename': 'add_tag', 'model': Tag},
+                {'codename': 'change_tag', 'model': Tag},
+                {'codename': 'view_tag', 'model': Tag},
             ],
             'Guest': [
                 {'codename': 'view_userprofile', 'model': UserProfile},

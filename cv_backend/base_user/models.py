@@ -165,6 +165,24 @@ class UserProfile(models.Model):
             return self.social_media_profiles
         return None
     
+    @property
+    def get_education(self):
+        if self.education:
+            return self.education
+        return None
+    
+    @property
+    def get_skills(self):
+        if self.skills:
+            return self.skills
+        return None
+    
+    @property
+    def get_courses(self):
+        if self.courses:
+            return self.courses
+        return None
+
     @classmethod
     def load(cls):
         obj, created = cls.objects.get_or_create(pk=1)
