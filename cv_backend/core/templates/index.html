@@ -83,6 +83,7 @@
     <section
       class="container mx-auto max-w-2xl mt-10 p-6 bg-white shadow-lg rounded-lg"
     >
+      {% if is_login %}
       <div class="text-center mt-5">
         <a
           href="/swagger/"
@@ -95,6 +96,7 @@
           >📘 Ver Redoc</a
         >
       </div>
+      {% endif %}
     </section>
     <section
       class="container mx-auto max-w-2xl mt-10 p-6 bg-white shadow-lg rounded-lg"
