@@ -2,17 +2,19 @@ FROM python:3.12
 
 WORKDIR /app/cv_backend
 
-# Copiar todo el código dentro del contenedor
 COPY . /app/
 
-# Instalar dependencias
 RUN pip install --no-cache-dir -r /app/cv_backend/requirements.txt
+
+# Asegurar que pipeline.sh está en la imagen
+RUN ls -l /app/cv_backend/  # Esto mostrará el contenido en Railway logs
 
 # Asegurar permisos de ejecución para pipeline.sh
 RUN chmod +x /app/pipeline.sh
 
-# Exponer puerto para Railway
+# Ejecutar el pipeline antes de arrancar Gunicorn
+RUN /app/pipeline.sh
+
 EXPOSE 8000
 
-# Ejecutar Django + Celery juntos usando un script de inicio
-CMD ["/bin/bash", "-c", "/app/pipeline.sh && gunicorn cv_backend.wsgi:application --bind 0.0.0.0:8000 --log-file - & celery -A cv_backend worker --loglevel=info --pool=solo"]
+CMD ["gunicorn", "cv_backend.wsgi:application", "--bind", "0.0.0.0:8000", "--log-file", "-"]
