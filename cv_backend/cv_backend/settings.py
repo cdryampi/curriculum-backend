@@ -235,7 +235,8 @@ RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY', default='6Lccat8pAAAAAFT
 
 # settings.py
 AUTH_USER_MODEL = 'base_user.CustomUser'
-
+LOGIN_REDIRECT_URL = '/admin/'  # Redirige al admin después del login.
+LOGOUT_REDIRECT_URL = '/'  # Redirige la vista de la página principal.
 # logs
 
 # Rest framework
@@ -251,3 +252,8 @@ REST_FRAMEWORK = {
     ],
 
 }
+
+# Configuración de Celery con Redis
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
