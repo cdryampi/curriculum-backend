@@ -1,0 +1,17 @@
+{% extends "admin/base.html" %} {% block extrastyle %} {{ block.super }}
+<style>
+  .celery-log-btn {
+    display: inline-block;
+    padding: 10px;
+    background: #ff9800;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+  }
+</style>
+{% endblock %} {% block content %} {% if show_log_button %}
+<a href="{% url 'admin:ver-log-celery' %}" class="celery-log-btn">
+  📜 Ver Log de Celery
+</a>
+{% endif %} {{ block.super }} {% endblock %}

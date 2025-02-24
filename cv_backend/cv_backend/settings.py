@@ -195,8 +195,10 @@ JAZZMIN_SETTINGS = {
     "site_header": "Mi Currículum",
     "site_brand": "Mi Currículum",
     "welcome_sign": "Bienvenido al Panel de Administración",
-    "search_model": "auth.User",
-    "user_avatar": None,  # Personaliza esto según tus necesidades
+    "search_model": ["base_user.User"],
+    "topmenu_links": [
+        {"name": "⚡ Estado de Celery", "url": "/admin/ver-log-celery/", "permissions": ["auth.view_user"]},
+    ],
 }
 
 
@@ -257,3 +259,4 @@ REST_FRAMEWORK = {
 CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
