@@ -2,6 +2,7 @@ import subprocess
 import platform
 from django.http import JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
+from core.tasks import hello_world
 
 @staff_member_required
 def ver_log_celery(request):
@@ -19,5 +20,12 @@ def ver_log_celery(request):
             status = "❌ Celery NO ha ejecutado tareas recientemente"
     except Exception as e:
         status = f"⚠️ Error verificando Celery: {str(e)}"
+
+    try:
+        print("Ejecutando tarea de prueba en Celery...")
+        task_result = hello_world.delay()
+        print(f"ID de la tarea: {task_result.id}")
+    except Exception as e:
+        print(f"Error ejecutando tarea de prueba en Celery: {str(e)}")
 
     return JsonResponse({"status": status})
