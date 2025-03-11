@@ -16,5 +16,3 @@ from django.core.management import call_command
 print("Ejecutando el comando de assign_users_data")
 call_command('add_users_data')
 print("Comando de assign_users_data ejecutado con éxito")
-print("Ejecutando el comando para probar redis")
-call_command('start_redis')

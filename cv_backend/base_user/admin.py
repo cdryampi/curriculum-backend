@@ -143,20 +143,24 @@ class UserProfileAdmin(admin.ModelAdmin):
                 user_profile = getattr(request.user, 'id', None)
                 if user_profile:
                     kwargs['queryset'] = MediaFile.objects.filter(creado_por=user_profile)
-                    #Filtrar por la relación inversa desde UserProfile para que los usuarios solo vean sus propias imágenes de este modelo.
-                    filtro_por_modelos = filter_logo_queryset(
-                    model_name='UserProfile',
-                    model_id=user_profile,
-                    user=request.user
-                    )
-                    if filtro_por_modelos:
-                        kwargs['queryset'] = filtro_por_modelos
+
+                    try:
+                        filtro_por_modelos = filter_logo_queryset(
+                            model_name='UserProfile',
+                            model_id=user_profile,
+                            user=request.user
+                        )
+                        if filtro_por_modelos.exists():
+                            kwargs['queryset'] = filtro_por_modelos
+                    except Exception as e:
+                        print(f"⚠️ Error en filter_logo_queryset: {e}")
                 else:
                     kwargs['queryset'] = MediaFile.objects.none()
             else:
                 kwargs['queryset'] = MediaFile.objects.none()
 
             kwargs['empty_label'] = 'Sin imagen asociada'
+
         if db_field.name == 'resume_file':
             if request.user.is_authenticated:
                 # Filtrar por la relación inversa desde UserProfile

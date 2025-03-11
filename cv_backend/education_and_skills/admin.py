@@ -18,7 +18,8 @@ class EducationAdmin(admin.ModelAdmin):
         """
         Asigna automáticamente el usuario actual al objeto Education y establece is_staff en True si el usuario es un administrador.
         """
-        if not obj.user_profile_id:
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
             obj.user_profile = UserProfile.objects.get(user=request.user)
         super().save_model(request, obj, form, change)
 
@@ -35,7 +36,7 @@ class EducationAdmin(admin.ModelAdmin):
         """
         Verifica que los administradores solo puedan cambiar su propia cuenta.
         """
-        if obj is not None and obj.user_profile.user != request.user:
+        if obj is not None and obj.user != request.user:
             return False
         return super().has_delete_permission(request, obj)
     
@@ -43,9 +44,17 @@ class EducationAdmin(admin.ModelAdmin):
         """
         Verifica que los administradores solo puedan eliminar su propio perfil.
         """
-        if obj is not None and obj.user_profile.user != request.user:
+        if obj is not None and obj.user != request.user:
             return False
         return super().has_delete_permission(request, obj)
+    
+    def get_readonly_fields(self, request, obj = None):
+        """
+            Define los campos de solo lectura para los usuarios no superusuarios.
+        """
+        if obj and obj.user != request.user and not request.user.is_superuser:
+            return ('title', 'subtitle', 'institution', 'start_year', 'end_year', 'description', 'tags', 'user_profile')
+        return super().get_readonly_fields(request, obj)
 
 
 @admin.register(Skill)

@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from .models import MediaFile, DocumentFile
 
 class MediaFileAdmin(admin.ModelAdmin):
@@ -21,8 +22,9 @@ class MediaFileAdmin(admin.ModelAdmin):
             obj.creado_por = request.user
         obj.modificado_por = request.user  # Siempre asignar el modificador
         super().save_model(request, obj, form, change)
-        
+
 admin.site.register(MediaFile, MediaFileAdmin)
+
 class DocumentFileAdmin(admin.ModelAdmin):
     list_display = ('title', 'file')
 

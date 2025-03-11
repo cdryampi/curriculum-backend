@@ -139,8 +139,3 @@ JAZZMIN_SETTINGS = {
 ## Iniciar el servidor de desarrollo
 
 python manage.py runserver
-
-## Iniciar el redis
-
-celery -A cv_backend worker --loglevel=info --pool=solo # vs code
-redis-server # ubuntu subsystem windows

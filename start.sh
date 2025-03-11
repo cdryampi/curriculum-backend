@@ -4,5 +4,3 @@ export PORT=${PORT:-8000}  # Usa el puerto de Railway o 8000 por defecto
 
 pip install --no-cache-dir -r requirements.txt
 gunicorn cv_backend.wsgi:application --bind 0.0.0.0:$PORT --log-file - &
-celery -A cv_backend worker --loglevel=info --pool=solo &
-wait

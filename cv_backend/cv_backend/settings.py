@@ -38,7 +38,6 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
 # Application definition
 
 INSTALLED_APPS = [
-    'django_celery_results',
     'corsheaders',
     'rest_framework',
     'drf_yasg',
@@ -197,9 +196,6 @@ JAZZMIN_SETTINGS = {
     "site_brand": "Mi Currículum",
     "welcome_sign": "Bienvenido al Panel de Administración",
     "search_model": ["base_user.User"],
-    "topmenu_links": [
-        {"name": "⚡ Estado de Celery", "url": "/admin/ver-log-celery/", "permissions": ["auth.view_user"]},
-    ],
 }
 
 
@@ -229,7 +225,8 @@ CORS_ALLOW_HEADERS = [
     "content-type",
     "accept",
     "x-csrf-token",
-    "x-requested-with"
+    "x-requested-with",
+    "user"
 ]
 
 
@@ -255,15 +252,3 @@ REST_FRAMEWORK = {
     ],
 
 }
-
-# Configuración de Celery con Redis
-CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
-
-# Configurar Celery para almacenar los resultados en la base de datos de Django
-CELERY_RESULT_BACKEND = "django-db"
-
-# Opcional: Si quieres guardar también en caché
-CELERY_CACHE_BACKEND = "django-cache"

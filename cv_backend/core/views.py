@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from django.views.generic import TemplateView
+from rest_framework import status
 # Create your views here.
 
 class IndexView(TemplateView):
@@ -54,22 +55,38 @@ class IndexView(TemplateView):
     
 class CustomAuthToken(ObtainAuthToken):
     """
-        Clase encargada de manejar la autenticación personalizada y retornar el token de autenticación
+    Vista personalizada para la autenticación con tokens.
     """
     def post(self, request, *args, **kwargs):
-        """
-            Método que se encarga de manejar la petición POST y retornar el token de autenticación
-        """
-        serializer = self.serializer_class(data=request.data,
-                                           context={'request': request})
-        serializer.is_valid(raise_exception=True)
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        
+        if not serializer.is_valid():
+            return Response(
+                {"error": "Credenciales inválidas"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
         user = serializer.validated_data['user']
+
+        # Si el usuario está inactivo, evitar que inicie sesión
+        if not user.is_active:
+            return Response(
+                {"error": "Este usuario está inactivo."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Generar o recuperar el token
         token, created = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user_id': user.pk,
-            'email': user.email
-        })
+
+        return Response(
+            {
+                "token": token.key,
+                "user_id": user.pk,
+                "username": user.username,
+                "email": user.email,
+            },
+            status=status.HTTP_200_OK
+        )
     
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 4  # Display 4 skills per page
