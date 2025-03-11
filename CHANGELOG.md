@@ -16,3 +16,4 @@
 - [x] Agregar más pruebas unitarias.
 - [x] Agregar más pruebas de integración.
 - [x] probar el despliegue en Railway.
+- [x] eliminar Celery del proyecto.
