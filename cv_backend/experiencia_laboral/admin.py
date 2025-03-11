@@ -39,7 +39,7 @@ class ExperienciaLaboralAdmin(admin.ModelAdmin):
                         model_id= experiencia_laboral_id,
                         user=request.user
                     )
-                    if filtro_por_modelos:
+                    if len(filtro_por_modelos) > 1:
                         kwargs["queryset"] = filtro_por_modelos
                 else:
                     kwargs["queryset"] = MediaFile.objects.none()
@@ -60,8 +60,8 @@ class ExperienciaLaboralAdmin(admin.ModelAdmin):
                         model_id= experiencia_laboral_id,
                         user=request.user
                     )
-                    if filtro_por_modelos:
-                        kwargs["queryset"] = filtro_por_modelos
+                    if len(filtro_por_modelos) > 1:
+                            kwargs["queryset"] = filtro_por_modelos
                 else:
                     kwargs["queryset"] = MediaFile.objects.none()
         kwargs["empty_label"] = "Sin imagen asociada"

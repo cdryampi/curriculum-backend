@@ -266,7 +266,7 @@ class MetaAdmin(admin.ModelAdmin):
                     model_id=user_profile,
                     user=request.user
                     )
-                    if filtro_por_modelos:
+                    if len(filtro_por_modelos) > 1:
                         kwargs['queryset'] = filtro_por_modelos
                 else:
                     kwargs['queryset'] = MediaFile.objects.none()
@@ -285,7 +285,7 @@ class MetaAdmin(admin.ModelAdmin):
                     model_id=user_profile,
                     user=request.user
                     )
-                    if filtro_por_modelos:
+                    if len(filtro_por_modelos) > 1:
                         kwargs['queryset'] = filtro_por_modelos
                 else:
                     kwargs['queryset'] = MediaFile.objects.none()

@@ -16,24 +16,23 @@ def eliminar_imagenes_antes_actualizacion(sender, instance, **kwargs):
             old_instance = MediaFile.objects.get(pk=instance.pk)
 
             # Si el archivo cambió, eliminamos las versiones anteriores
-            if old_instance.file != instance.file:
+            if old_instance.file and old_instance.file != instance.file:
                 eliminar_imagenes_de_cache(old_instance)
 
                 paths = [
-                    old_instance.image_for_pc,
-                    old_instance.image_for_tablet,
-                    old_instance.image_for_mobile,
-                    old_instance.file.path
+                    old_instance.image_for_pc.path if old_instance.image_for_pc else None,
+                    old_instance.image_for_tablet.path if old_instance.image_for_tablet else None,
+                    old_instance.image_for_mobile.path if old_instance.image_for_mobile else None,
+                    old_instance.file.path if old_instance.file else None
                 ]
 
                 for path in paths:
-                    if path and os.path.exists(os.path.join(settings.MEDIA_ROOT, path)):
-                        os.remove(os.path.join(settings.MEDIA_ROOT, path))
-
-                print(f"🗑️ Imágenes antiguas eliminadas para MediaFile {old_instance.id}")
+                    if path and os.path.exists(path):
+                        os.remove(path)
+                        print(f"🗑️ Eliminado: {path}")
 
         except MediaFile.DoesNotExist:
-            pass  # Si el objeto no existe, no hay nada que borrar
+            pass  # Si no existe, no hay nada que borrar
 
 
 @receiver(post_save, sender=MediaFile)
