@@ -52,6 +52,7 @@ urlpatterns = [
     path('laboral_experience/', include('experiencia_laboral.urls')),
     path('education_and_skills/', include('education_and_skills.urls')),
     path('coments/', include('coment.urls')),
+    path('portfolio/', include('projects.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

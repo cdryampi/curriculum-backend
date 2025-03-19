@@ -103,7 +103,7 @@ class UserProfileAdmin(admin.ModelAdmin):
     """
     Admin personalizado para el modelo UserProfile.
     """
-    list_display = ('user', 'nombre', 'apellido', 'profesion', 'ciudad', 'telefono', 'edad')
+    list_display = ('user', 'nombre', 'apellido', 'profesion', 'ciudad', 'telefono', 'edad', 'disponibilidad')
     search_fields = ('nombre', 'apellido', 'correo_electronico')
     list_filter = ('profesion', 'ciudad')
     readonly_fields = ('user',)
