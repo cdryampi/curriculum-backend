@@ -3,12 +3,12 @@ from django.dispatch import receiver
 from django.contrib.auth.models import Group, Permission
 from .models import CustomUser, UserProfile
 from rest_framework.authtoken.models import Token
-
+from email_service.models import EmailConfig
 
 @receiver(post_save, sender=CustomUser)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     """
-    Crea o actualiza el perfil de usuario y asigna grupos y permisos basados en el rol.
+    Crea o actualiza el perfil de usuario más la configuración de correo y asigna grupos y permisos basados en el rol.
     """
     # Crear perfil si no existe
     if created:
@@ -42,7 +42,15 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
                     except Permission.DoesNotExist:
                         # Registro de advertencia si el permiso no existe
                         print(f"Warning: Permission with codename '{perm_codename}' does not exist.")
-
+        
+        # crear la configuración de correo
+        EmailConfig.objects.create(
+            user_profile=instance.profile,
+            defaults={
+                'email_sender': instance.email,
+                'default_message': 'Gracias por tu mensaje, te responderemos pronto.'
+            }
+        )
     # Actualizar perfil existente si es necesario
     else:
         if hasattr(instance, 'profile'):
