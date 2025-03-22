@@ -17,3 +17,5 @@
 - [x] Agregar más pruebas de integración.
 - [x] probar el despliegue en Railway.
 - [x] eliminar Celery del proyecto.
+- [] hacer vistas privadas de las páginas estadísticas para los usuarios autenticados.
+- [] corregir los test de github actions.

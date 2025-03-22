@@ -1,6 +1,6 @@
 from rest_framework import generics
 from .models import UserProfile
-from .serializers import UserProfileSerializer
+from .serializers import UserProfileSerializer, PDFSerializer
 from rest_framework.permissions import IsAuthenticated
 
 class UserProfileDetailView(generics.RetrieveAPIView):
@@ -43,6 +43,20 @@ class UserProfilePrivateView(generics.RetrieveAPIView):
         Clase encargada de manejar las peticiones GET de un perfil de usuario filtrado por id del usuario
     """
     serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    """
+        Método que se encarga de filtrar el perfil de usuario según el usuario autenticado
+    """
+
+    def get_object(self):
+        return UserProfile.objects.get(user=self.request.user)
+
+class UserPDFView(generics.RetrieveAPIView):
+    """
+        Clase encargada de manejar las peticiones GET de un perfil de usuario filtrado por id del usuario
+    """
+    serializer_class = PDFSerializer
     permission_classes = [IsAuthenticated]
 
     """
