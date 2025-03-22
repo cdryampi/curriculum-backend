@@ -46,10 +46,8 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
         # crear la configuración de correo
         EmailConfig.objects.create(
             user_profile=instance.profile,
-            defaults={
-                'email_sender': instance.email,
-                'default_message': 'Gracias por tu mensaje, te responderemos pronto.'
-            }
+            email_sender=instance.email,
+            default_message='Gracias por tu mensaje, te responderemos pronto.'
         )
     # Actualizar perfil existente si es necesario
     else:
