@@ -38,7 +38,15 @@ class SkillViewFilter(generics.ListAPIView):
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
-        queryset = Skill.objects.all()
+        """
+        Filtra las habilidades por categoría y por nivel de habilidad.
+        """
+        try:
+            profile_user = UserProfile.objects.get(user=self.request.user)
+        except UserProfile.DoesNotExist:
+            return Skill.objects.none()
+        
+        queryset = Skill.objects.all().filter(user_profile=profile_user)
         category = self.kwargs.get('slug')
         proficiency_min = self.request.query_params.get('proficiency_min', None)
         

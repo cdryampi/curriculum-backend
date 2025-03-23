@@ -23,7 +23,8 @@ class EducationAdmin(admin.ModelAdmin):
         if not obj.pk:  # Al crear la imagen
             obj.creado_por = request.user
         obj.modificado_por = request.user  # Al modificar la imagen
-        
+        if not obj.user_profile_id:
+            obj.user_profile = request.user.userprofile
         super().save_model(request, obj, form, change)
 
     def get_queryset(self, request):
@@ -78,7 +79,9 @@ class SkillAdmin(admin.ModelAdmin):
         if not obj.pk:  # Al crear la imagen
             obj.creado_por = request.user
         obj.modificado_por = request.user  # Al modificar la imagen
-        
+
+        if not obj.user_profile_id:
+            obj.user_profile = UserProfile.objects.get(user=request.user)
         super().save_model(request, obj, form, change)
 
     def get_queryset(self, request):

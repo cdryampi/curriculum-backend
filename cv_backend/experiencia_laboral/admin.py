@@ -22,6 +22,10 @@ class ExperienciaLaboralAdmin(admin.ModelAdmin):
         if not obj.pk:  # Al crear la imagen
             obj.creado_por = request.user
         obj.modificado_por = request.user  # Al modificar la imagen
+
+        if not obj.user_profile_id:
+            obj.user_profile = UserProfile.objects.get(user=request.user)
+            
         super().save_model(request, obj, form, change)
     
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

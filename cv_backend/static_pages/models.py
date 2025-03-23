@@ -2,12 +2,18 @@ from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
 from multimedia_manager.models import MediaFile
 from django.utils.text import slugify
-
+from base_user.models import UserProfile
 # Create your models here.
 class StaticPage(models.Model):
     """
         Clase que representa a una pagina estatica básica.
     """
+    user_profile = models.ForeignKey(
+        UserProfile,
+        on_delete=models.CASCADE,
+        verbose_name="Perfil de usuario",
+        related_name="paginas_estaticas",
+    )
     title = models.CharField(
         max_length=100,
         verbose_name="Título",
