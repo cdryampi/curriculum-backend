@@ -49,18 +49,27 @@ def eliminar_imagenes_post_delete(sender, instance, **kwargs):
     """
     Elimina los archivos físicos cuando se borra el objeto.
     """
-    paths = [
-        instance.image_for_pc.path if instance.image_for_pc else None,
-        instance.image_for_tablet.path if instance.image_for_tablet else None,
-        instance.image_for_mobile.path if instance.image_for_mobile else None,
-        instance.file.path if instance.file else None
-    ]
+    try:
 
-    for path in paths:
-        if path and os.path.exists(path):
-            os.remove(path)
-            
-    print(f"✅ Imágenes eliminadas para MediaFile {instance.id}")
+        paths = [
+            instance.image_for_pc.path if instance.image_for_pc else None,
+            instance.image_for_tablet.path if instance.image_for_tablet else None,
+            instance.image_for_mobile.path if instance.image_for_mobile else None,
+            instance.file.path if instance.file else None
+        ]
+
+        for path in paths:
+            try:
+                if path and os.path.exists(path):
+                    os.remove(path)
+                    print(f"🗑️ Eliminado: {path}")
+            except Exception as e:
+                print(f"❌ Error al eliminar {path}: {e}")
+
+                
+        print(f"✅ Imágenes eliminadas para MediaFile {instance.id}")
+    except Exception as e:
+        print(f"❌ Error al eliminar imágenes: {e}")
 
 
 def eliminar_imagenes_de_cache(instance):
@@ -74,6 +83,9 @@ def eliminar_imagenes_de_cache(instance):
     ]
 
     for key in cache_keys:
-        cache.delete(key)
+        try:
+            cache.delete(key)
+        except Exception as e:
+            print(f"❌ Error al eliminar caché {key}: {e}")
 
     print(f"🧹 Caché eliminada para MediaFile {instance.id}")

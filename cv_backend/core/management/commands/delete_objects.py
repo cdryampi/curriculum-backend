@@ -4,12 +4,17 @@ from django.contrib.contenttypes.models import ContentType
 from base_user.models import UserProfile, Meta, CustomUser
 from multimedia_manager.models import MediaFile, DocumentFile
 from education_and_skills.models import Education, Skill, Course
+from static_pages.models import StaticPage
+from core.models import Tag
 class Command(BaseCommand):
     help = 'Delete objects from the database hard reset when needed'
 
     def handle(self, *args, **kwargs):
         # Eliminar datos existentes.
         self.stdout.write(self.style.WARNING("Deleting existing data..."))
+        # Eliminar los objetos de páginas estáticas de la base de datos.
+        self.stdout.write(self.style.WARNING("Deleting static pages..."))
+        StaticPage.objects.all().delete()
         # Eliminar los objetos de educación de la base de datos.
         self.stdout.write(self.style.WARNING("Deleting education objects..."))
         Education.objects.all().delete()
@@ -25,6 +30,9 @@ class Command(BaseCommand):
         CustomUser.objects.all().delete()
         UserProfile.objects.all().delete()
         Meta.objects.all().delete()
+
+        self.stdout.write(self.style.WARNING("Deleting tags..."))
+        Tag.objects.all().delete()
 
 
         self.stdout.write(self.style.SUCCESS("Existing data deleted successfully!"))
