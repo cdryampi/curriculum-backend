@@ -11,7 +11,8 @@ class MediaFile(BaseModel):
     """
     file = models.FileField(
         upload_to='media_files/',
-        validators= [validate_image_file]
+        validators= [validate_image_file],
+        max_length=255,
     )
     title = models.CharField(
         max_length=255,

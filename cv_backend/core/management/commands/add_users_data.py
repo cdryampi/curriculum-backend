@@ -11,10 +11,12 @@ from static_pages.models import StaticPage
 from multimedia_manager.models import MediaFile, DocumentFile
 import os
 from django.core.files import File
+from pathlib import Path
 class Command(BaseCommand):
     help = 'Add sample users and groups to the database'
 
     def handle(self, *args, **kwargs):
+        BASE_DIR = Path(__file__).resolve().parents[3] # directorio raiz del proyecto: cv_backend
 
         # Eliminar datos existentes
         call_command('delete_objects')
@@ -201,8 +203,8 @@ class Command(BaseCommand):
                         'fecha_inicio': '2023-03-25',
                         'fecha_fin': '2024-04-01',
                         'ubicacion': 'Cabrera de Mar',
-                        'logo_empresa': 'cabrera_de_mar.png',
-                        'logo_empresa_fondo': 'fondo_cabrera_de_mar.jpg',
+                        'logo_empresa': 'cabrera_logo.png',
+                        'logo_empresa_fondo': 'cabrera.jpg',
                         'tags': ['Python', 'Django', 'HTML', 'CSS', 'JavaScript', 'Linux', 'Windows Server']
                     },
                     {
@@ -400,7 +402,7 @@ class Command(BaseCommand):
                 profile.direccion = user_data['profile']['direccion']
                 profile.telefono = user_data['profile']['telefono']
                 profile.edad = user_data['profile']['edad']
-                base_path = 'core/images_script/profiles/'
+                base_path = BASE_DIR / 'core' / 'images_script' / 'profiles'
                 profile.save()
                 self.stdout.write(
                     self.style.SUCCESS(
@@ -410,11 +412,11 @@ class Command(BaseCommand):
                 try:
                     if user_data['profile']['image']:
                         self.stdout.write(f"Adding profile image... for user: {user.username}")
-                        image_path = os.path.join(base_path, user_data['profile']['image'])
-
+                        filename = user_data['profile']['image'].strip()
+                        image_path = base_path / filename
                         if os.path.exists(image_path):
                             with open(image_path, 'rb') as f:
-                                image_file = File(f)
+                                image_file = File(f, name=filename)
                                 media_file, created = MediaFile.objects.get_or_create(
                                     title=f'{user.username}_profile_image',
                                     creado_por=user,
@@ -436,11 +438,12 @@ class Command(BaseCommand):
                 try:
                     if user_data['profile']['pdf']:
                         self.stdout.write(f"Adding profile pdf... for user: {user.username}")
-                        image_path = os.path.join(base_path, user_data['profile']['pdf'])
+                        filename = user_data['profile']['pdf'].strip()
+                        image_path = base_path / filename
 
                         if os.path.exists(image_path):
                             with open(image_path, 'rb') as f:
-                                pdf_file = File(f)
+                                pdf_file = File(f, name=filename)
                                 document_file, created = DocumentFile.objects.get_or_create(
                                     title=f'{user.username}_profile_pdf',
                                     creado_por=user,
@@ -458,7 +461,6 @@ class Command(BaseCommand):
                             self.stdout.write(self.style.ERROR(f"PDF not found at path: {image_path}"))
                 except KeyError:
                     self.stdout.write(self.style.WARNING(f"No PDF found for user: {user.username}"))
-                
                 
                 # Asignar keywords al perfil
                 for keyword in user_data['profile']['keywords']:
@@ -499,7 +501,7 @@ class Command(BaseCommand):
                             )
                 # Asignar habilidades al perfil
                 if user_data['skills']:
-                    base_path = 'core/images_script/skills/'
+                    base_path = BASE_DIR / 'core' / 'images_script' / 'skills'
                     for skill_data in user_data['skills']:
                         skill, created = Skill.objects.get_or_create(
                             user_profile = profile,
@@ -511,19 +513,17 @@ class Command(BaseCommand):
                             try:
                                 if skill_data['image']:
                                     self.stdout.write(f"Adding skill image... for skill: {skill.title}")
-                                    image_path = os.path.join(base_path, skill_data['image'])
-
+                                    filename = skill_data['image'].strip()
+                                    image_path = base_path / filename
                                     if os.path.exists(image_path):
                                         with open(image_path, 'rb') as f:
-                                            image_file = File(f)
+                                            image_file = File(f, name=filename)
                                             media_file, created = MediaFile.objects.get_or_create(
                                                 title=f'{skill.title}_image',
                                                 creado_por=user,
                                                 modificado_por=user,
                                                 defaults={'file': image_file}
                                             )
-                                            if created or not media_file.file:
-                                                media_file.file.save(f'{skill.title}_image', image_file, save=True)
                                             # Asignar la imagen a la habilidad
                                             skill.logo = media_file
                                             skill.save()
@@ -581,6 +581,7 @@ class Command(BaseCommand):
                 # Asignar los proyectos al perfil
                 try:
                     if user_data['projects']:
+                        base_path = BASE_DIR / 'core' / 'images_script' / 'projects'
                         for project_data in user_data['projects']:
                             project, created = Project.objects.get_or_create(
                                 user_profile = profile,
@@ -620,14 +621,14 @@ class Command(BaseCommand):
                                     self.stdout.write(self.style.WARNING(f"No tags found for project: {project.title}"))
                                 
                                 try:
-                                    base_path = 'core/images_script/projects/'
                                     if project_data['image']:
                                         self.stdout.write(f"Adding project image... for project: {project.title}")
-                                        image_path = os.path.join(base_path, project_data['image'])
+                                        filename = project_data['image'].strip()
+                                        image_path = base_path / filename
 
                                         if os.path.exists(image_path):
                                             with open(image_path, 'rb') as f:
-                                                image_file = File(f)
+                                                image_file = File(f, name=filename)
                                                 media_file, created = MediaFile.objects.get_or_create(
                                                     title=f'{project.title}_image',
                                                     creado_por=user,
@@ -702,14 +703,15 @@ class Command(BaseCommand):
                                     self.stdout.write(self.style.WARNING(f"No tags found for experience: {experience.empresa}"))
                                 
                                 try:
-                                    base_path = 'core/images_script/experiencias_laborales/'
+                                    base_path = BASE_DIR / 'core' / 'images_script' / 'experiencias_laborales'
                                     if experience_data['logo_empresa']:
                                         self.stdout.write(f"Adding company logo... for experience: {experience.empresa}")
-                                        image_path = os.path.join(base_path, experience_data['logo_empresa'])
+                                        filename = experience_data['logo_empresa'].strip()
+                                        image_path = base_path / filename
 
                                         if os.path.exists(image_path):
                                             with open(image_path, 'rb') as f:
-                                                image_file = File(f)
+                                                image_file = File(f, name=filename)
                                                 media_file, created = MediaFile.objects.get_or_create(
                                                     title=f'{experience.empresa}_logo',
                                                     creado_por=user,
@@ -727,11 +729,12 @@ class Command(BaseCommand):
                                             self.stdout.write(self.style.ERROR(f"Image not found at path: {image_path}"))
                                     if experience_data['logo_empresa_fondo']:
                                         self.stdout.write(f"Adding company logo background... for experience: {experience.empresa}")
-                                        image_path = os.path.join(base_path, experience_data['logo_empresa_fondo'])
+                                        filename = experience_data['logo_empresa_fondo'].strip()
+                                        image_path = base_path / filename
 
                                         if os.path.exists(image_path):
                                             with open(image_path, 'rb') as f:
-                                                image_file = File(f)
+                                                image_file = File(f, name=filename)
                                                 media_file, created = MediaFile.objects.get_or_create(
                                                     title=f'{experience.empresa}_logo_fondo',
                                                     creado_por=user,
@@ -753,7 +756,7 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.WARNING(f"No experiences found for user: {user.username}"))
                 
                 try:
-                    base_path = 'core/images_script/services/'
+                    base_path = BASE_DIR / 'core' / 'images_script' / 'services'
                     if user_data['services']:
                         for service_data in user_data['services']:
                             service, created = Service.objects.get_or_create(
@@ -767,11 +770,11 @@ class Command(BaseCommand):
                                 try:
                                     if service_data['icon']:
                                         self.stdout.write(f"Adding service icon... for service: {service.title}")
-                                        image_path = os.path.join(base_path, service_data['icon'])
-
+                                        filename = service_data['icon'].strip()
+                                        image_path = base_path / filename
                                         if os.path.exists(image_path):
                                             with open(image_path, 'rb') as f:
-                                                image_file = File(f)
+                                                image_file = File(f, name=filename)
                                                 media_file, created = MediaFile.objects.get_or_create(
                                                     title=f'{service.title}_icon',
                                                     creado_por=user,
@@ -798,7 +801,7 @@ class Command(BaseCommand):
                 except KeyError:
                     self.stdout.write(self.style.WARNING(f"No services found for user: {user.username}"))
                 try:
-                    base_path = 'core/images_script/static_pages/'
+                    base_path = BASE_DIR / 'core' / 'images_script' / 'static_pages'
                     if user_data['static_pages']:
                         for page_data in user_data['static_pages']:
                             page, created = StaticPage.objects.get_or_create(
@@ -811,11 +814,13 @@ class Command(BaseCommand):
                                 try:
                                     if page_data['image']:
                                         self.stdout.write(f"Adding static page image... for page: {page.title}")
-                                        image_path = os.path.join(base_path, page_data['image'])
+                                        filename = page_data['image'].strip()
+
+                                        image_path = base_path / filename
 
                                         if os.path.exists(image_path):
                                             with open(image_path, 'rb') as f:
-                                                image_file = File(f)
+                                                image_file = File(f, name=filename)
                                                 media_file, created = MediaFile.objects.get_or_create(
                                                     title=f'{page.title}_image',
                                                     creado_por=user,
