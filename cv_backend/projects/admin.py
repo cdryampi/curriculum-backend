@@ -18,6 +18,10 @@ class ProjectAdmin(admin.ModelAdmin):
         if not obj.pk:  # Si es un objeto nuevo
             obj.creado_por = request.user
         obj.modificado_por = request.user  # Siempre se actualiza el modificador
+        
+        if not obj.user_profile_id:
+            obj.user_profile = request.user.userprofile
+
         super().save_model(request, obj, form, change)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

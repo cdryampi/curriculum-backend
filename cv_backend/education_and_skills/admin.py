@@ -23,7 +23,8 @@ class EducationAdmin(admin.ModelAdmin):
         if not obj.pk:  # Al crear la imagen
             obj.creado_por = request.user
         obj.modificado_por = request.user  # Al modificar la imagen
-        
+        if not obj.user_profile_id:
+            obj.user_profile = request.user.userprofile
         super().save_model(request, obj, form, change)
 
     def get_queryset(self, request):
@@ -39,7 +40,7 @@ class EducationAdmin(admin.ModelAdmin):
         """
         Verifica que los administradores solo puedan cambiar su propia cuenta.
         """
-        if obj is not None and obj.user != request.user:
+        if obj is not None and obj.user_profile.user != request.user:
             return False
         return super().has_delete_permission(request, obj)
     
@@ -47,7 +48,7 @@ class EducationAdmin(admin.ModelAdmin):
         """
         Verifica que los administradores solo puedan eliminar su propio perfil.
         """
-        if obj is not None and obj.user != request.user:
+        if obj is not None and obj.user_profile.user != request.user:
             return False
         return super().has_delete_permission(request, obj)
     
@@ -55,7 +56,7 @@ class EducationAdmin(admin.ModelAdmin):
         """
             Define los campos de solo lectura para los usuarios no superusuarios.
         """
-        if obj and obj.user != request.user and not request.user.is_superuser:
+        if obj and obj.user_profile.user != request.user and not request.user.is_superuser:
             return ('title', 'subtitle', 'institution', 'start_year', 'end_year', 'description', 'tags', 'user_profile')
         return super().get_readonly_fields(request, obj)
 
@@ -78,7 +79,9 @@ class SkillAdmin(admin.ModelAdmin):
         if not obj.pk:  # Al crear la imagen
             obj.creado_por = request.user
         obj.modificado_por = request.user  # Al modificar la imagen
-        
+
+        if not obj.user_profile_id:
+            obj.user_profile = UserProfile.objects.get(user=request.user)
         super().save_model(request, obj, form, change)
 
     def get_queryset(self, request):

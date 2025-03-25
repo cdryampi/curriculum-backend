@@ -129,6 +129,11 @@ class UserProfile(models.Model):
         verbose_name="Edad",
         help_text="Ingrese su edad."
     )
+    disponibilidad = models.BooleanField(
+        default=True,
+        verbose_name="¿Disponible?",
+        help_text="¿Estás disponible para trabajar?"
+    )
     resume_file = models.ForeignKey(
         DocumentFile,
         on_delete=models.SET_NULL,

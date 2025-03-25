@@ -2,6 +2,7 @@ from django.db import models
 from base_user.models import UserProfile
 from django_ckeditor_5.fields import CKEditor5Field
 from multimedia_manager.models import MediaFile
+from colorfield.fields import ColorField
 
 class Service(models.Model):
     user_profile = models.ForeignKey(
@@ -26,6 +27,11 @@ class Service(models.Model):
         related_name='service_icons',
         verbose_name="Icono"
     )
+    color = ColorField(
+        verbose_name="Color",
+        default='#284BE4'
+    )
+
     active = models.BooleanField(
         default=True,
         verbose_name="Activo"

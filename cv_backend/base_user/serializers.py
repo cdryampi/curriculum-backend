@@ -79,7 +79,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             Clase que se encarga de definir los campos a serializar
         """
         model = UserProfile
-        fields = '__all__'  # Ajusta los campos según sea necesario
+        fields = '__all__'
 
 class MetaSerializer(serializers.ModelSerializer):
     """
@@ -90,7 +90,7 @@ class MetaSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Meta
-        fields = '__all__'  # Ajusta los campos según sea necesario
+        fields = '__all__'
 
 class KeywordsSerializer(serializers.ModelSerializer):
     """
@@ -98,4 +98,14 @@ class KeywordsSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Keywords
-        fields = '__all__'  # Ajusta los campos según sea necesario
+        fields = '__all__'
+
+
+class PDFSerializer(serializers.ModelSerializer):
+    """
+        Clase encargada de serializar el archivo PDF de un perfil de usuario
+    """
+    resume_file = DocumentFileSerializer(read_only=True)
+    class Meta:
+        model = UserProfile
+        fields = ['resume_file']
