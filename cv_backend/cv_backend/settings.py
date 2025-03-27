@@ -203,12 +203,12 @@ JAZZMIN_SETTINGS = {
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Cors
-CORS_ALLOW_ALL=True
-
+#CORS_ALLOW_ALL=True
+CORS_ALLOW_CREDENTIALS = True  # Si usas cookies o auth cross-site
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://yampi.eu",
     "https://curriculum-backend-production.up.railway.app",
-    "https://yampi.eu"
 ]
 
 CORS_ALLOW_ALL_ORIGINS = config('DEBUG', default=True, cast=bool)
