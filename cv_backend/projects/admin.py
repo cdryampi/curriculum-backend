@@ -6,7 +6,7 @@ from multimedia_manager.models import MediaFile
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
 
-    list_display = ('title', 'user_profile', 'start_date', 'end_date', 'link', 'image')
+    list_display = ('title', 'user_profile', 'start_date', 'end_date', 'link', 'image', 'order')
     list_filter = ('start_date', 'end_date', 'user_profile')
     search_fields = ('title', 'description')
     filter_horizontal = ('tags',)

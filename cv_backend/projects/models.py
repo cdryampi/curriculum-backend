@@ -66,10 +66,16 @@ class Project(models.Model):
         blank=True,
         verbose_name="Etiquetas"
     )
+    order = models.IntegerField(
+        default=0,
+        verbose_name="Orden",
+        help_text="Orden de visualización del proyecto."
+    )
 
     class Meta:
         verbose_name = "Proyecto"
         verbose_name_plural = "Proyectos"
+        ordering = ["order"]
 
     def __str__(self):
         return self.title

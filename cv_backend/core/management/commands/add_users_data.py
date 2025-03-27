@@ -260,16 +260,8 @@ class Command(BaseCommand):
                         'end_date': '2025-03-10',
                         'link': 'https://cdryampi.github.io/mega-curso-vue/guitarrala-vue/',
                         'image': 'guitarra.png',
-                        'tags': ['HTML', 'CSS', 'JavaScript', 'Vue', 'Vite', 'Tailwind']
-                    },
-                    {
-                        'title': 'Gaudeix Cabrera',
-                        'description': 'Plataforma web para la promoción del turismo y el comercio local en Cabrera de Mar.',
-                        'start_date': '2023-03-25',
-                        'end_date': '2024-04-01',
-                        'link': 'https://gaudeixcabrera.cat',
-                        'image': 'gaudeix_2.png',
-                        'tags': ['Python', 'Django', 'HTML', 'CSS', 'JavaScript', 'Linux']
+                        'tags': ['HTML', 'CSS', 'JavaScript', 'Vue', 'Vite', 'Tailwind'],
+                        'order':0
                     },
                     {
                         'title': 'tienda de los tercios',
@@ -278,8 +270,80 @@ class Command(BaseCommand):
                         'end_date': '2025-03-20',
                         'link': 'https://github.com/cdryampi/backend-tercio',
                         'image': 'tercios.png',
-                        'tags': ['Strapi', 'Vue', 'Tailwind', 'Vite']
+                        'tags': ['Strapi', 'Vue', 'Tailwind', 'Vite'],
+                        'order':1
                     },
+                    {
+                        'title': 'Bola del Drac',
+                        'description': 'Proyecto de frontend para presentar datos de la serie Bola del Drac con Astro.',
+                        'start_date': '2025-02-15',
+                        'end_date': '2025-02-21',
+                        'link': 'https://type-script-phi.vercel.app/',
+                        'image': 'bola_del_drac.png',
+                        'tags': ['HTML', 'CSS', 'JavaScript', 'Astro'],
+                        'order':2
+                    },
+                    {
+                        'title': 'Cafetería Django',
+                        'description': 'Aplicación web para gestionar una cafetería.',
+                        'start_date': '2016-02-20',
+                        'end_date': '2016-05-10',
+                        'link': 'https://cdryampi.github.io/web-empresa-django-2/',
+                        'image': 'cafeteria.png',
+                        'tags': ['Django', 'Python', 'HTML', 'CSS', 'JavaScript'],
+                        'order':3
+                    },
+                    {
+                        'title': 'Gaudeix Cabrera',
+                        'description': 'Plataforma web para la promoción del turismo y el comercio local en Cabrera de Mar.',
+                        'start_date': '2023-03-25',
+                        'end_date': '2024-04-01',
+                        'link': 'https://gaudeixcabrera.cat',
+                        'image': 'gaudeix_2.png',
+                        'tags': ['Python', 'Django', 'HTML', 'CSS', 'JavaScript', 'Linux'],
+                        'order':4
+                    },
+
+                    {
+                        'title': 'Tienda Django',
+                        'description': 'Tienda online de productos de la marca Django.',
+                        'start_date': '2025-01-15',
+                        'end_date': '2025-02-20',
+                        'link': 'https://github.com/cdryampi/tienda-django',
+                        'image': 'tienda_django.png',
+                        'tags': ['Django', 'Python', 'HTML', 'CSS', 'JavaScript', 'Vue','Tailwind', 'vite'],
+                        'order':5
+                    },
+                    {
+                        'title': 'Retos de JavaScript',
+                        'description': 'Retos de JavaScript resueltos.',
+                        'start_date': '2025-01-01',
+                        'end_date': '2025-03-10',
+                        'link': 'https://cdryampi.github.io/retos_aulascript/#/',
+                        'image': 'retos_js.png',
+                        'tags': ['HTML', 'CSS', 'JavaScript', 'Vue', 'Vite', 'tailwind'],
+                        'order':6
+                    },
+                    {
+                        'title': 'curriculum frontend',
+                        'description': 'Proyecto para dar vida a mi applicación de currículum.',
+                        'start_date': '2025-01-01',
+                        'end_date': '2025-03-10',
+                        'link': 'yampi.eu',
+                        'image': 'curriculum_front.png',
+                        'tags': ['HTML', 'CSS', 'JavaScript', 'React', 'Vite', 'tailwind'],
+                        'order':7
+                    },
+                    {
+                        'title': 'Retos de programación',
+                        'description': 'Retos de programación de Python.',
+                        'start_date': '2024-01-10',
+                        'end_date': '2025-12-24',
+                        'link': 'https://github.com/cdryampi/roadmap-retos-programacion',
+                        'image':'retos_de_programacion.jpg',
+                        'tags': ['Python'],
+                        'order':8
+                    }
                 ],
                 'courses':[
                     {'title':'Curso de Python', 'platform': 'Udemy', 'completion_year': 2022,'certificate_url': 'https://www.udemy.com/certificate/python', 'description': 'Curso de Python en Udemy.'},
@@ -590,6 +654,7 @@ class Command(BaseCommand):
                                 start_date = project_data['start_date'],
                                 end_date = project_data['end_date'],
                                 link = project_data['link'],
+                                order = project_data['order'],
                             )
                             if created:
                                 self.stdout.write(
