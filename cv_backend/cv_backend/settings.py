@@ -208,6 +208,7 @@ CORS_ALLOW_ALL=True
 
 CSRF_TRUSTED_ORIGINS = [
     "https://curriculum-backend-production.up.railway.app",
+    "https://yampi.eu"
 ]
 
 CORS_ALLOW_ALL_ORIGINS = config('DEBUG', default=True, cast=bool)
