@@ -230,6 +230,10 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
     "user"
 ]
+# https cors
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+
 
 
 RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY', default='6Lccat8pAAAAAFT2Xlgt0STyZHYVM2_WP5oYLj1')
