@@ -9,18 +9,20 @@ class DocumentFileSerializer(serializers.ModelSerializer):
         model = DocumentFile
         fields = ['title', 'file', 'pdf_url']
 
-    def get_pdf_url(self, obj):
+    def get_url(self, obj, file_attr):
         """
             Método que devuelve la URL del archivo PDF.
             Si el archivo no existe, devuelve None.
         """
         request = self.context.get('request')
-        if obj.file and hasattr(obj.file, 'url'):
-            return request.build_absolute_uri(obj.file.url) if request else obj.file.url
-        return None
+        file_attr = getattr(obj, 'file', None)
+        if file_attr and hasattr(file_attr, 'url'):
+            # Verifica si el archivo tiene una URL
+            return request.build_absolute_uri(file_attr.url) if request else file_attr.url
+        return None  # Retorna None si no existe el archivo
     
     def get_pdf_url(self, obj):
-        return self.get_file_url(obj, 'file')
+        return self.get_url(obj, 'file')
 
 
     
