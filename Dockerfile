@@ -7,6 +7,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pkg-config \
     python3-dev \
     default-libmysqlclient-dev \
+    postgresql-client \
+    postgresql-server-dev-all \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

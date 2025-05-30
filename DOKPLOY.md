@@ -17,9 +17,23 @@ SECRET_KEY=tu_clave_secreta
 DEBUG=False
 URL_SERVER=https://tu-dominio.com
 ALLOWED_HOSTS=tu-dominio.com,www.tu-dominio.com
+
+# Configuración de base de datos - Opción 1: URL completa
 DATABASE_URL=postgres://usuario:contraseña@host:puerto/nombre_bd
+
+# Configuración de base de datos - Opción 2: Variables separadas
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=nombre_bd
+DB_USER=usuario
+DB_PASSWORD=contraseña
+DB_HOST=host
+DB_PORT=5432
+
+# Configuración de reCAPTCHA
 RECAPTCHA_PUBLIC_KEY=tu_clave_publica_recaptcha
 RECAPTCHA_PRIVATE_KEY=tu_clave_privada_recaptcha
+
+# Configuración de correo electrónico
 EMAIL_HOST=smtp.proveedor.com
 EMAIL_PORT=587
 EMAIL_HOST_USER=tu@email.com

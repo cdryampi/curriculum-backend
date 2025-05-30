@@ -24,6 +24,12 @@ export IMAGE_NAME=${IMAGE_NAME:-"curriculum-backend"}
 export IMAGE_TAG=${IMAGE_TAG:-"latest"}
 export APP_DOMAIN=${APP_DOMAIN:-"your-app-domain.com"}
 
+# Verificar inicio de sesión en el registro Docker
+echo -e "${GREEN}Verificando inicio de sesión en el registro Docker...${NC}"
+if [[ -n "$REGISTRY_URL" && "$REGISTRY_URL" != "your-registry-url" ]]; then
+    echo -e "${YELLOW}Asegúrate de haber iniciado sesión en el registro Docker con: docker login $REGISTRY_URL${NC}"
+fi
+
 # Construir la imagen
 echo -e "${GREEN}Construyendo imagen Docker...${NC}"
 docker build -t $REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG .
