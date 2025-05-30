@@ -1,35 +1,31 @@
 #!/bin/bash
-echo "==== Iniciando pipeline ===="
+echo "==== Iniciando pipeline para Dokploy ===="
 
 # Definir el módulo de configuración de Django
 export DJANGO_SETTINGS_MODULE=cv_backend.settings
 export PYTHONPATH=/app  # Asegurar que Python encuentra el módulo de Django
 
-echo "Entrado en el directorio de la aplicación"
-
-if [ -d "cv_backend" ]; then
-    cd /app/cv_backend
-fi
+echo "Entrando en el directorio de la aplicación"
+cd /app/cv_backend
 
 echo "==== Ejecutando migraciones ===="
-
 python manage.py migrate --noinput
 
 echo "==== Ejecutando collectstatic ===="
-
 python manage.py collectstatic --noinput
 
 echo "==== Ajustando permisos para static y media ===="
+# Crear directorios si no existen
+mkdir -p static/
+mkdir -p media/
 
 chmod -R 755 static/
 chmod -R 755 media/
 
-echo "retornando al directorio raíz"
-
+echo "Retornando al directorio raíz"
 cd /app
 
 echo "==== Ejecutando tareas de post-deploy ===="
-
 if [ -f "post_deploy.py" ]; then
     python post_deploy.py
 else
@@ -37,6 +33,3 @@ else
 fi
 
 echo "==== Pipeline completada ===="
-echo "==== Estructura del proyecto en Railway ===="
-ls -R /app/cv_backend
-echo "==== Iniciando servidor ===="

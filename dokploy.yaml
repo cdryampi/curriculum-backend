@@ -1,0 +1,62 @@
+# Dokploy configuration file
+name: curriculum-backend
+
+# Configuración de la aplicación
+app:
+  type: container
+  image: ${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}
+
+# Variables de entorno
+env:
+  - SECRET_KEY
+  - DEBUG
+  - URL_SERVER
+  - ALLOWED_HOSTS
+  - DATABASE_URL
+  - RECAPTCHA_PUBLIC_KEY
+  - RECAPTCHA_PRIVATE_KEY
+  - EMAIL_HOST
+  - EMAIL_PORT
+  - EMAIL_HOST_USER
+  - EMAIL_HOST_PASSWORD
+
+# Configuración de recursos
+resources:
+  cpu: 1
+  memory: 1Gi
+
+# Configuración de red
+networking:
+  port: 8000
+  domains:
+    - domain: ${APP_DOMAIN}
+      path: /
+
+# Volúmenes persistentes
+volumes:
+  - name: media-files
+    mountPath: /app/cv_backend/media
+    size: 5Gi
+  - name: static-files
+    mountPath: /app/cv_backend/static
+    size: 2Gi
+
+# Definición de hooks del ciclo de vida
+hooks:
+  # Ejecutar antes de iniciar la aplicación
+  predeploy:
+    command: bash /app/pipeline.sh
+
+# Configuración de salud
+health:
+  path: /admin/login/
+  initialDelaySeconds: 30
+  periodSeconds: 60
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+# Escalado
+scaling:
+  min: 1
+  max: 2

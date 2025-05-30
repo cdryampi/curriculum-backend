@@ -1,20 +1,32 @@
-FROM python:3.12
+FROM python:3.12-slim
 
-WORKDIR /app/cv_backend
+# Instalar dependencias necesarias
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libcairo2-dev \
+    pkg-config \
+    python3-dev \
+    default-libmysqlclient-dev \
+    && rm -rf /var/lib/apt/lists/*
 
+WORKDIR /app
+
+# Copiar archivos de requisitos primero para aprovechar la caché de Docker
+COPY cv_backend/requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar el resto de los archivos
 COPY . /app/
 
-RUN pip install --no-cache-dir -r /app/cv_backend/requirements.txt
-
-# Asegurar que pipeline.sh está en la imagen
-RUN ls -l /app/cv_backend/  # Esto mostrará el contenido en Railway logs
-
-# Asegurar permisos de ejecución para pipeline.sh
+# Asegurar permisos de ejecución para scripts
 RUN chmod +x /app/pipeline.sh
+RUN chmod +x /app/start.sh
 
-# Ejecutar el pipeline antes de arrancar Gunicorn
-RUN /app/pipeline.sh
-
+# Exponer el puerto que utilizará la aplicación
 EXPOSE 8000
 
-CMD ["gunicorn", "cv_backend.wsgi:application", "--bind", "0.0.0.0:8000", "--log-file", "-"]
+# No ejecutamos el pipeline aquí ya que Dokploy tiene su propio ciclo de vida
+# En su lugar, lo manejaremos en dokploy.yaml
+
+# Usar el script de inicio como punto de entrada
+CMD ["bash", "start.sh"]
