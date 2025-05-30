@@ -1,12 +1,10 @@
 # Dokploy configuration file
 name: curriculum-backend
 
-# Configuración de la aplicación
 app:
   type: container
   image: ${REGISTRY_URL}/${IMAGE_NAME}:${IMAGE_TAG}
 
-# Variables de entorno
 env:
   - SECRET_KEY
   - DEBUG
@@ -26,19 +24,16 @@ env:
   - EMAIL_HOST_USER
   - EMAIL_HOST_PASSWORD
 
-# Configuración de recursos
 resources:
   cpu: 1
   memory: 1Gi
 
-# Configuración de red
 networking:
   port: 8000
   domains:
-    - domain: ${APP_DOMAIN}
+    - domain: backend.yampi.eu
       path: /
 
-# Volúmenes persistentes
 volumes:
   - name: media-files
     mountPath: /app/cv_backend/media
@@ -47,13 +42,10 @@ volumes:
     mountPath: /app/cv_backend/static
     size: 2Gi
 
-# Definición de hooks del ciclo de vida
 hooks:
-  # Ejecutar antes de iniciar la aplicación
   predeploy:
-    command: bash /app/pipeline.sh
+    command: bash -c "echo '▶ Ejecutando pipeline...' && bash /app/pipeline.sh"
 
-# Configuración de salud
 health:
   path: /admin/login/
   initialDelaySeconds: 30
@@ -62,7 +54,6 @@ health:
   successThreshold: 1
   failureThreshold: 3
 
-# Escalado
 scaling:
   min: 1
   max: 2

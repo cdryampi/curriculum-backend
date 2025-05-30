@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-# Instalar dependencias necesarias
+# Instalar dependencias necesarias del sistema
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libcairo2-dev \
@@ -12,24 +12,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Directorio de trabajo
 WORKDIR /app
 
-# Copiar archivos de requisitos primero para aprovechar la caché de Docker
+# Copiar y preinstalar dependencias
 COPY cv_backend/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar el resto de los archivos
+# Copiar el resto del proyecto al contenedor
 COPY . /app/
 
-# Asegurar permisos de ejecución para scripts
+# Asegurar permisos a scripts que se ejecutarán en hooks o como entrada
 RUN chmod +x /app/pipeline.sh
 RUN chmod +x /app/start.sh
 
-# Exponer el puerto que utilizará la aplicación
+# Exponer el puerto en el que corre Gunicorn
 EXPOSE 8000
 
-# No ejecutamos el pipeline aquí ya que Dokploy tiene su propio ciclo de vida
-# En su lugar, lo manejaremos en dokploy.yaml
-
-# Usar el script de inicio como punto de entrada
+# Comando de inicio (Gunicorn envuelto por tu start.sh)
 CMD ["bash", "start.sh"]
