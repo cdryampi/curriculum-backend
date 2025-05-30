@@ -1,42 +1,18 @@
-version: '3'
+version: '3.9'
 
 services:
-  db:
-    image: postgres:15
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_DB=curriculum
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    ports:
-      - "5432:5432"
-
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: curriculum_backend
     command: bash start.sh
     volumes:
       - .:/app
-      - static_volume:/app/cv_backend/static
-      - media_volume:/app/cv_backend/media
+      - static-data:/app/static
+      - media-data:/app/media
+      - sqlite-db:/app/db.sqlite3
     ports:
       - "8000:8000"
-    depends_on:
-      - db
-    environment:
-      - SECRET_KEY=insecure-development-key
-      - DEBUG=True
-      - URL_SERVER=http://localhost:8000
-      - ALLOWED_HOSTS=localhost,127.0.0.1
-      - DB_ENGINE=django.db.backends.postgresql
-      - DB_NAME=curriculum
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_HOST=db
-      - DB_PORT=5432
-      # Añade aquí otras variables de entorno necesarias para desarrollo
-
-volumes:
-  postgres_data:
-  static_volume:
-  media_volume:
+    env_file:
+      - .env
