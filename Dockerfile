@@ -22,6 +22,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiar el resto del proyecto al contenedor
 COPY . /app/
 
+# Crear directorios necesarios
+RUN mkdir -p /app/cv_backend/data
+RUN mkdir -p /app/cv_backend/static
+RUN mkdir -p /app/cv_backend/media
+
 # Asegurar permisos a scripts que se ejecutarán en hooks o como entrada
 RUN chmod +x /app/pipeline.sh
 RUN chmod +x /app/start.sh

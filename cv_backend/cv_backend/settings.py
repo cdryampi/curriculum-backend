@@ -103,10 +103,17 @@ WSGI_APPLICATION = 'cv_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# Configuración de la base de datos SQLite con soporte para Dokploy
+# Directorio para la base de datos (puede ser montado como volumen)
+DB_DIR = config('DB_DIR', default=os.path.join(BASE_DIR, 'data'))
+
+# Crear el directorio si no existe
+os.makedirs(DB_DIR, exist_ok=True)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.path.join(DB_DIR, 'db.sqlite3'),
     }
 }
 

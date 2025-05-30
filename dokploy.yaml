@@ -29,18 +29,20 @@ networking:
 
 volumes:
   - name: media-files
-    mountPath: /app/media
+    mountPath: /app/cv_backend/media
     size: 2Gi
   - name: static-files
-    mountPath: /app/static
+    mountPath: /app/cv_backend/static
     size: 1Gi
-  - name: sqlite-db
-    mountPath: /app/db.sqlite3
-    size: 100Mi
+  - name: app-data
+    mountPath: /app/cv_backend/data
+    size: 500Mi
 
-hooks:
-  predeploy:
-    command: bash -c "echo '▶ Ejecutando pipeline...' && bash /app/pipeline.sh"
+# hooks:
+#   predeploy:
+#     command: bash -c "echo '▶ Ejecutando pipeline...' && bash /app/pipeline.sh"
+
+# El pipeline ahora se ejecuta en start.sh para mejor control
 
 health:
   path: /admin/login/
