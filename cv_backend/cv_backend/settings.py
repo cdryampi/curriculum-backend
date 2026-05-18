@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 from decouple import config
-from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -248,8 +247,8 @@ USE_X_FORWARDED_HOST = True
 
 
 
-RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY', default='6Lccat8pAAAAAFT2Xlgt0STyZHYVM2_WP5oYLj1')
-RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY', default='6Lccat8pAAAAAFT2Xlgt0STyZHYVM2_WP5oYLj1')
+RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY', default='')
+RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY', default='')
 
 # settings.py
 AUTH_USER_MODEL = 'base_user.CustomUser'
@@ -281,6 +280,6 @@ EMAIL_HOST = config("EMAIL_HOST", default='smtp.gmail.com')
 EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
 EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", default='cdryampi@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "1234567890")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="")
 #EMAIL_USE_SSL = config("EMAIL_USE_SSL")

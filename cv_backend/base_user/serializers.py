@@ -3,31 +3,20 @@ from .models import UserProfile, Meta, Keywords
 from multimedia_manager.serializers import MediaFileSerializer, DocumentFileSerializer
 from redes_sociales.serializers import SocialMediaProfileSerializer
 from education_and_skills.serializers import EducationSerializer, SkillSerializer, CourseSerializer
-from rest_framework.response import Response
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    """
-        Clase encargada de serializar los datos de un perfil de usuario
-    """
     foto = MediaFileSerializer(read_only=True)
     resume_file = DocumentFileSerializer(read_only=True)
     profesion = serializers.CharField(source='get_profesion_display')
     meta = serializers.SerializerMethodField(read_only=True)
     keywords = serializers.SerializerMethodField(read_only=True)
     socials_media = serializers.SerializerMethodField(read_only=True)
-    
     education = serializers.SerializerMethodField(read_only=True)
     skills = serializers.SerializerMethodField(read_only=True)
     courses = serializers.SerializerMethodField(read_only=True)
 
     def nested_context(self):
         return {'request': self.context.get('request')} if self.context.get('request') else {}
-
-    def get(self, request, *args, **kwargs):
-        user_profile = UserProfile.objects.get(...)  # Obtienes el perfil de usuario
-        serializer = UserProfileSerializer(user_profile, context={'request': request})
-        return Response(serializer.data)
-
 
     def get_meta(self, obj):
         """

@@ -6,10 +6,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libcairo2-dev \
     pkg-config \
     python3-dev \
-    default-libmysqlclient-dev \
-    postgresql-client \
-    postgresql-server-dev-all \
-    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Directorio de trabajo

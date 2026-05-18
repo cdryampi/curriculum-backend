@@ -150,7 +150,7 @@ class UserProfile(models.Model):
     
     @property
     def profesion_readable(self):
-        return self.PROFESIONES.get(self.profesion, 'Profesión no especificada')
+        return dict(self.PROFESIONES).get(self.profesion, 'Profesión no especificada')
     
     @property
     def get_meta(self):
