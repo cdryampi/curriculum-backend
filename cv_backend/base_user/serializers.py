@@ -20,6 +20,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
     skills = serializers.SerializerMethodField(read_only=True)
     courses = serializers.SerializerMethodField(read_only=True)
 
+    def nested_context(self):
+        return {'request': self.context.get('request')} if self.context.get('request') else {}
+
     def get(self, request, *args, **kwargs):
         user_profile = UserProfile.objects.get(...)  # Obtienes el perfil de usuario
         serializer = UserProfileSerializer(user_profile, context={'request': request})
@@ -31,7 +34,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             Método que se encarga de serializar los metadatos de un perfil de usuario
         """
         if hasattr(obj, 'meta') and obj.meta:
-            return MetaSerializer(obj.meta).data
+            return MetaSerializer(obj.meta, context=self.nested_context()).data
         return None  # Devuelve None si no existe
 
     def get_keywords(self, obj):
@@ -47,7 +50,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             Método que se encarga de serializar los perfiles de redes sociales de un perfil de usuario
         """
         if hasattr(obj, 'social_media_profiles') and obj.social_media_profiles:
-            return SocialMediaProfileSerializer(obj.social_media_profiles, many=True).data
+            return SocialMediaProfileSerializer(obj.social_media_profiles, many=True, context=self.nested_context()).data
         return None
     
     def get_education(self, obj):
@@ -55,7 +58,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             Método que se encarga de serializar las educaciones de un perfil de usuario
         """
         if hasattr(obj, 'education') and obj.education:
-            return EducationSerializer(obj.education, many=True).data
+            return EducationSerializer(obj.education, many=True, context=self.nested_context()).data
         return None
     
     def get_skills(self, obj):
@@ -63,7 +66,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             Método que se encarga de serializar las habilidades de un perfil de usuario
         """
         if hasattr(obj, 'skills') and obj.skills:
-            return SkillSerializer(obj.skills, many=True).data
+            return SkillSerializer(obj.skills, many=True, context=self.nested_context()).data
         return None
     
     def get_courses(self, obj):
@@ -71,7 +74,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             Método que se encarga de serializar los cursos de un perfil de usuario
         """
         if hasattr(obj, 'courses') and obj.courses:
-            return CourseSerializer(obj.courses, many=True).data
+            return CourseSerializer(obj.courses, many=True, context=self.nested_context()).data
         return None
     
     class Meta:

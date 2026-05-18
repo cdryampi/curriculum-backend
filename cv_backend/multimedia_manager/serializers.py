@@ -1,6 +1,12 @@
 from rest_framework import serializers
 from .models import MediaFile, DocumentFile
-from cv_backend.settings import URL_SERVER
+
+
+def build_file_url(serializer, file_attr):
+    if not file_attr or not hasattr(file_attr, 'url'):
+        return None
+    request = serializer.context.get('request')
+    return request.build_absolute_uri(file_attr.url) if request else file_attr.url
 
 class DocumentFileSerializer(serializers.ModelSerializer):
     pdf_url = serializers.SerializerMethodField()
@@ -9,17 +15,12 @@ class DocumentFileSerializer(serializers.ModelSerializer):
         model = DocumentFile
         fields = ['title', 'file', 'pdf_url']
 
-    def get_url(self, obj, file_attr):
+    def get_url(self, obj, file_attr_name):
         """
             Método que devuelve la URL del archivo PDF.
             Si el archivo no existe, devuelve None.
         """
-        request = self.context.get('request')
-        file_attr = getattr(obj, 'file', None)
-        if file_attr and hasattr(file_attr, 'url'):
-            # Verifica si el archivo tiene una URL
-            return request.build_absolute_uri(file_attr.url) if request else file_attr.url
-        return None  # Retorna None si no existe el archivo
+        return build_file_url(self, getattr(obj, file_attr_name, None))
     
     def get_pdf_url(self, obj):
         return self.get_url(obj, 'file')
@@ -33,18 +34,17 @@ class MediaFileSerializer(serializers.ModelSerializer):
     image_for_pc_url = serializers.SerializerMethodField()
     image_for_tablet_url = serializers.SerializerMethodField()
     image_for_mobile_url = serializers.SerializerMethodField()
+    file = serializers.SerializerMethodField()
 
     class Meta:
         model = MediaFile
         fields = ['file', 'title', 'uploaded_at', 'image_for_pc_url', 'image_for_tablet_url', 'image_for_mobile_url']
 
+    def get_file(self, obj):
+        return build_file_url(self, getattr(obj, 'file', None))
+
     def get_image_url(self, obj, attr_name):
-        request = self.context.get('request')
-        file_attr = getattr(obj, attr_name, None)
-        
-        if file_attr and hasattr(file_attr, 'url'):  # Verifica si tiene URL
-            return request.build_absolute_uri(file_attr.url) if request else file_attr.url
-        return None  # Retorna None si no existe el archivo
+        return build_file_url(self, getattr(obj, attr_name, None))
 
     def get_image_for_pc_url(self, obj):
         return self.get_image_url(obj, 'image_for_pc')
