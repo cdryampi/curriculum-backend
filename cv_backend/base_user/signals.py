@@ -43,11 +43,13 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
                         # Registro de advertencia si el permiso no existe
                         print(f"Warning: Permission with codename '{perm_codename}' does not exist.")
         
-        # crear la configuración de correo
-        EmailConfig.objects.create(
+        # crear la configuración de correo (get_or_create para evitar duplicados en fixture imports)
+        EmailConfig.objects.get_or_create(
             user_profile=instance.profile,
-            email_sender=instance.email,
-            default_message='Gracias por tu mensaje, te responderemos pronto.'
+            defaults={
+                'email_sender': instance.email,
+                'default_message': 'Gracias por tu mensaje, te responderemos pronto.'
+            }
         )
     # Actualizar perfil existente si es necesario
     else:
@@ -60,4 +62,4 @@ def create_auth_token(sender, instance, created, **kwargs):
     Crea un token de autenticación para el usuario.
     """
     if created:
-        Token.objects.create(user=instance)
+        Token.objects.get_or_create(user=instance)
