@@ -15,8 +15,13 @@ La aplicación requiere las siguientes variables de entorno:
 ```
 SECRET_KEY=tu_clave_secreta
 DEBUG=False
-URL_SERVER=https://tu-dominio.com
-ALLOWED_HOSTS=tu-dominio.com,www.tu-dominio.com
+URL_SERVER=https://backend.yampi.eu
+ALLOWED_HOSTS=backend.yampi.eu,localhost,127.0.0.1
+PUBLIC_PROFILE_USERNAME=tu_usuario_publico
+CORS_ALLOWED_ORIGINS=https://cdryampi.github.io,https://yampi.eu,https://www.yampi.eu
+CORS_ALLOW_ALL_ORIGINS=False
+CSRF_TRUSTED_ORIGINS=https://backend.yampi.eu,https://cdryampi.github.io,https://yampi.eu,https://www.yampi.eu
+CONTACT_THROTTLE_RATE=5/hour
 
 # Configuración de reCAPTCHA
 RECAPTCHA_PUBLIC_KEY=tu_clave_publica_recaptcha

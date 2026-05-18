@@ -1,16 +1,19 @@
 from rest_framework import generics, status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from base_user.models import UserProfile
+from rest_framework.throttling import ScopedRateThrottle
 from .utils import return_message, send_back_email
 from .serializers import SendEmailSerializer
+from core.public_profile import get_public_profile
 
 class SendEmailView(generics.CreateAPIView):
     """
     Vista para enviar un correo al usuario del perfil autenticado y responder automáticamente.
     """
     serializer_class = SendEmailSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "contact"
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -20,9 +23,8 @@ class SendEmailView(generics.CreateAPIView):
         email = serializer.validated_data["email"]
         message = serializer.validated_data["message"]
 
-        try:
-            user_profile = UserProfile.objects.get(user=request.user)
-        except UserProfile.DoesNotExist:
+        user_profile = get_public_profile()
+        if user_profile is None:
             return Response({"error": "Perfil de usuario no encontrado"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:

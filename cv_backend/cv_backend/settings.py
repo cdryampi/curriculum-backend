@@ -33,6 +33,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 URL_SERVER = config('URL_SERVER', default='http://localhost:8000')
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
+PUBLIC_PROFILE_USERNAME = config('PUBLIC_PROFILE_USERNAME', default='')
 
 
 # Application definition
@@ -213,12 +214,16 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 #CORS_ALLOW_ALL=True
 CORS_ALLOW_CREDENTIALS = True  # Si usas cookies o auth cross-site
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://yampi.eu",
-    "https://curriculum-backend-production.up.railway.app",
-]
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='https://backend.yampi.eu,https://cdryampi.github.io,https://yampi.eu,https://www.yampi.eu'
+).split(',')
 
-CORS_ALLOW_ALL_ORIGINS = config('DEBUG', default=True, cast=bool)
+CORS_ALLOWED_ORIGINS = config(
+    'CORS_ALLOWED_ORIGINS',
+    default='https://cdryampi.github.io,https://yampi.eu,https://www.yampi.eu'
+).split(',')
+CORS_ALLOW_ALL_ORIGINS = config('CORS_ALLOW_ALL_ORIGINS', default=DEBUG, cast=bool)
 
 CORS_ALLOW_METHODS = [
     "GET",
@@ -263,6 +268,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',  # 🔒 Bloquea usuarios no autenticados
     ],
+    'DEFAULT_THROTTLE_RATES': {
+        'contact': config('CONTACT_THROTTLE_RATE', default='5/hour'),
+    },
 
 }
 
