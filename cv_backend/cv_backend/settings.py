@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import re
 from pathlib import Path
 import os
 from decouple import config
@@ -103,19 +104,42 @@ WSGI_APPLICATION = 'cv_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# Configuración de la base de datos SQLite con soporte para Dokploy
-# Directorio para la base de datos (puede ser montado como volumen)
 DB_DIR = config('DB_DIR', default=os.path.join(BASE_DIR, 'data'))
 
-# Crear el directorio si no existe
-os.makedirs(DB_DIR, exist_ok=True)
+DATABASE_URL = config('DATABASE_URL', default=None)
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(DB_DIR, 'db.sqlite3'),
+if DATABASE_URL:
+    match = re.match(r'postgres://(.+):(.+)@(.+):(\d+)/(.+)', DATABASE_URL)
+    if match:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': match.group(5),
+                'USER': match.group(1),
+                'PASSWORD': match.group(2),
+                'HOST': match.group(3),
+                'PORT': int(match.group(4)),
+            }
+        }
+    else:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': config('DB_NAME', default='curriculum'),
+                'USER': config('DB_USER', default='postgres'),
+                'PASSWORD': config('DB_PASSWORD', default=''),
+                'HOST': config('DB_HOST', default='localhost'),
+                'PORT': config('DB_PORT', default=5432, cast=int),
+            }
+        }
+else:
+    os.makedirs(DB_DIR, exist_ok=True)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(DB_DIR, 'db.sqlite3'),
+        }
     }
-}
 
 CKEDITOR_5_CONFIGS = {
     'default': {

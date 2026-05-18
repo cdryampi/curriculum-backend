@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libcairo2-dev \
     pkg-config \
     python3-dev \
+    libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
 # Directorio de trabajo
