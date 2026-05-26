@@ -39,6 +39,7 @@ PUBLIC_PROFILE_USERNAME = config('PUBLIC_PROFILE_USERNAME', default='')
 # Application definition
 
 INSTALLED_APPS = [
+    'gpt_actions',
     'email_service',
     'corsheaders',
     'rest_framework',
