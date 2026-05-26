@@ -1,0 +1,777 @@
+openapi: 3.0.0
+info:
+  title: Private CV Management API (GPT Actions)
+  version: 1.0.0
+  description: API privada segura para leer y editar los datos del CV de Yampi usando un Custom GPT de ChatGPT.
+
+servers:
+  - url: https://YOUR_BACKEND_DOMAIN/gpt-actions
+    description: Servidor de producción (reemplazar con el dominio real)
+
+security:
+  - BearerAuth: []
+
+paths:
+  /profile/:
+    get:
+      operationId: getProfile
+      summary: Obtiene el perfil profesional del usuario autenticado.
+      description: Recupera los datos principales del perfil (nombre, correo, profesión, resumen, etc.).
+      responses:
+        '200':
+          description: Perfil recuperado con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: No autorizado.
+
+    patch:
+      operationId: updateProfile
+      summary: Actualiza parcialmente el perfil profesional del usuario.
+      description: Modifica solo los campos proporcionados del perfil (por ejemplo, el resumen profesional o la profesión).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+      responses:
+        '200':
+          description: Perfil actualizado correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Datos de entrada no válidos.
+        '401':
+          description: No autorizado.
+
+  /experiences/:
+    get:
+      operationId: listExperiences
+      summary: Lista las experiencias laborales del usuario autenticado.
+      description: Devuelve un listado completo de los puestos de trabajo y empresas.
+      responses:
+        '200':
+          description: Listado recuperado con éxito.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExperienciaLaboral'
+        '401':
+          description: No autorizado.
+
+    post:
+      operationId: createExperience
+      summary: Crea una nueva experiencia laboral.
+      description: Añade una experiencia laboral asociada automáticamente al perfil del usuario autenticado.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperienciaLaboralInput'
+      responses:
+        '201':
+          description: Creado correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperienciaLaboral'
+        '400':
+          description: Error de validación.
+        '401':
+          description: No autorizado.
+
+  /experiences/{id}/:
+    get:
+      operationId: getExperience
+      summary: Obtiene los detalles de una experiencia laboral específica.
+      description: Recupera un único registro por su ID numérico si pertenece al usuario.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Registro recuperado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperienciaLaboral'
+        '401':
+          description: No autorizado.
+        '404':
+          description: No encontrado o no pertenece al usuario.
+
+    patch:
+      operationId: updateExperience
+      summary: Actualiza parcialmente una experiencia laboral.
+      description: Modifica los campos que se pasen en el JSON para el registro indicado.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperienciaLaboralInput'
+      responses:
+        '200':
+          description: Actualizado correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperienciaLaboral'
+        '401':
+          description: No autorizado.
+        '404':
+          description: No encontrado.
+
+    delete:
+      operationId: deleteExperience
+      summary: Elimina una experiencia laboral (Soft Delete).
+      description: Oculta la experiencia laboral del CV configurando 'publicado = False' en lugar de borrar físicamente el registro.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Borrado lógico aplicado con éxito (sin contenido).
+        '401':
+          description: No autorizado.
+        '404':
+          description: No encontrado.
+
+  /projects/:
+    get:
+      operationId: listProjects
+      summary: Lista los proyectos de portafolio del usuario autenticado.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+
+    post:
+      operationId: createProject
+      summary: Crea un nuevo proyecto.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectInput'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+
+  /projects/{id}/:
+    get:
+      operationId: getProject
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '404':
+          description: No encontrado.
+
+    patch:
+      operationId: updateProject
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectInput'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '404':
+          description: No encontrado.
+
+    delete:
+      operationId: deleteProject
+      summary: Elimina permanentemente un proyecto (Hard Delete).
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Eliminado físicamente de la base de datos.
+        '404':
+          description: No encontrado.
+
+  /education/:
+    get:
+      operationId: listEducation
+      summary: Lista las formaciones y educación formal del usuario autenticado.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Education'
+
+    post:
+      operationId: createEducation
+      summary: Crea un nuevo registro de educación.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EducationInput'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Education'
+
+  /education/{id}/:
+    get:
+      operationId: getEducation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Education'
+        '404':
+          description: No encontrado.
+
+    patch:
+      operationId: updateEducation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EducationInput'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Education'
+        '404':
+          description: No encontrado.
+
+    delete:
+      operationId: deleteEducation
+      summary: Elimina físicamente un registro de educación (Hard Delete).
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Eliminado.
+        '404':
+          description: No encontrado.
+
+  /skills/:
+    get:
+      operationId: listSkills
+      summary: Lista las habilidades del usuario autenticado.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Skill'
+
+    post:
+      operationId: createSkill
+      summary: Añade una nueva habilidad.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillInput'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Skill'
+
+  /skills/{id}/:
+    get:
+      operationId: getSkill
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Skill'
+        '404':
+          description: No encontrado.
+
+    patch:
+      operationId: updateSkill
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillInput'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Skill'
+        '404':
+          description: No encontrado.
+
+    delete:
+      operationId: deleteSkill
+      summary: Elimina físicamente una habilidad (Hard Delete).
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Eliminada.
+        '404':
+          description: No encontrado.
+
+  /courses/:
+    get:
+      operationId: listCourses
+      summary: Lista los cursos no formales realizados por el usuario autenticado.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+
+    post:
+      operationId: createCourse
+      summary: Registra un nuevo curso.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseInput'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+
+  /courses/{id}/:
+    get:
+      operationId: getCourse
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '404':
+          description: No encontrado.
+
+    patch:
+      operationId: updateCourse
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseInput'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '404':
+          description: No encontrado.
+
+    delete:
+      operationId: deleteCourse
+      summary: Elimina físicamente un curso registrado (Hard Delete).
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Eliminado.
+        '404':
+          description: No encontrado.
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Pega tu Bearer Token de Django REST Framework para autenticarte.
+
+  schemas:
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        nombre:
+          type: string
+          nullable: true
+        apellido:
+          type: string
+          nullable: true
+        correo_electronico:
+          type: string
+          format: email
+          nullable: true
+        resumen_habilidades:
+          type: string
+          description: Resumen en formato HTML o texto plano.
+          nullable: true
+        description:
+          type: string
+          description: Descripción personal en HTML o texto plano.
+          nullable: true
+        profesion:
+          type: string
+          enum: [programador_web, administrador_sistemas, programador_mobile]
+          description: Profesión principal elegida.
+        ciudad:
+          type: string
+          nullable: true
+        direccion:
+          type: string
+          nullable: true
+        telefono:
+          type: string
+          nullable: true
+        edad:
+          type: integer
+          nullable: true
+        disponibilidad:
+          type: boolean
+          description: Indica si el usuario está disponible para trabajar.
+
+    ExperienciaLaboral:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        empresa:
+          type: string
+        posicion:
+          type: string
+        descripcion:
+          type: string
+          description: Detalles de tus labores en formato HTML o texto plano.
+          nullable: true
+        fecha_inicio:
+          type: string
+          format: date
+          description: Fecha de inicio en formato YYYY-MM-DD.
+        fecha_fin:
+          type: string
+          format: date
+          description: Fecha de finalización en formato YYYY-MM-DD. Dejar nulo si es tu trabajo actual.
+          nullable: true
+        ubicacion:
+          type: string
+        publicado:
+          type: boolean
+          description: Determina si se muestra o no esta experiencia en el CV público.
+
+    ExperienciaLaboralInput:
+      type: object
+      required:
+        - empresa
+        - posicion
+        - fecha_inicio
+        - ubicacion
+      properties:
+        empresa:
+          type: string
+        posicion:
+          type: string
+        descripcion:
+          type: string
+        fecha_inicio:
+          type: string
+          format: date
+          description: Formato obligatorio YYYY-MM-DD.
+        fecha_fin:
+          type: string
+          format: date
+          description: Formato obligatorio YYYY-MM-DD. Dejar nulo o no enviar si es actual.
+          nullable: true
+        ubicacion:
+          type: string
+        publicado:
+          type: boolean
+
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        start_date:
+          type: string
+          format: date
+          description: YYYY-MM-DD
+        end_date:
+          type: string
+          format: date
+          description: YYYY-MM-DD
+          nullable: true
+        link:
+          type: string
+          format: uri
+          nullable: true
+        order:
+          type: integer
+
+    ProjectInput:
+      type: object
+      required:
+        - title
+        - start_date
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        start_date:
+          type: string
+          format: date
+          description: Formato obligatorio YYYY-MM-DD.
+        end_date:
+          type: string
+          format: date
+          description: Formato obligatorio YYYY-MM-DD.
+          nullable: true
+        link:
+          type: string
+          format: uri
+          nullable: true
+        order:
+          type: integer
+
+    Education:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+        subtitle:
+          type: string
+          nullable: true
+        institution:
+          type: string
+        start_year:
+          type: integer
+        end_year:
+          type: integer
+          nullable: true
+        description:
+          type: string
+          nullable: true
+
+    EducationInput:
+      type: object
+      required:
+        - title
+        - institution
+        - start_year
+      properties:
+        title:
+          type: string
+        subtitle:
+          type: string
+        institution:
+          type: string
+        start_year:
+          type: integer
+        end_year:
+          type: integer
+          nullable: true
+        description:
+          type: string
+
+    Skill:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+        category:
+          type: string
+          enum: [frontend, backend, mobile, sysadmin, office, other]
+        proficiency:
+          type: integer
+          description: Porcentaje de maestría en la habilidad (0 a 100).
+
+    SkillInput:
+      type: object
+      required:
+        - title
+        - category
+        - proficiency
+      properties:
+        title:
+          type: string
+        category:
+          type: string
+          enum: [frontend, backend, mobile, sysadmin, office, other]
+        proficiency:
+          type: integer
+          minimum: 0
+          maximum: 100
+
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+        platform:
+          type: string
+          enum: [Udemy, Platzi, OPENWEBINARS, SEPE]
+        completion_year:
+          type: integer
+        certificate_url:
+          type: string
+          format: uri
+          nullable: true
+        description:
+          type: string
+          nullable: true
+
+    CourseInput:
+      type: object
+      required:
+        - title
+        - platform
+        - completion_year
+      properties:
+        title:
+          type: string
+        platform:
+          type: string
+          enum: [Udemy, Platzi, OPENWEBINARS, SEPE]
+        completion_year:
+          type: integer
+        certificate_url:
+          type: string
+          format: uri
+          nullable: true
+        description:
+          type: string
